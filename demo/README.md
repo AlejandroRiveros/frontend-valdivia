@@ -1,0 +1,11 @@
+
+  # Proyecto Software
+
+  This is a code bundle for Proyecto Software. The original project is available at https://www.figma.com/design/7hbjQaPDfdVbhS1jTa0jI5/Proyecto-Software.
+
+  ## Running the code
+
+  Run `npm i` to install the dependencies.
+
+  Run `npm run dev` to start the development server.
+  
