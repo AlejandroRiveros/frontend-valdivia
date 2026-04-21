@@ -15,7 +15,7 @@ import {
   Info
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
 import DirectorHeader from '../components/director/DirectorHeader';
 import { apiFetch } from '../../lib/api';
@@ -45,9 +45,9 @@ interface ProcessFormData {
 }
 
 const MOCK_OPERATORS = [
-  { id: 'OP-01', name: 'Unión Temporal Aseo Norte' },
-  { id: 'OP-02', name: 'Recuperadora del Valle SAS' },
-  { id: 'OP-03', name: 'EcoServicios Ltda.' },
+  { id: 'OP-01', name: 'Consorcio Infraestructura Norte' },
+  { id: 'OP-02', name: 'Servicios Profesionales de Interventoría SAS' },
+  { id: 'OP-03', name: 'Gestión Documental Integral SAS' },
 ];
 
 const INTERNAL_BUDGET_LIMIT = 5000000000; // 5.000 M
@@ -253,7 +253,7 @@ export default function NewTenderProcessPage() {
                          <input 
                            type="text" 
                            className={`w-full px-4 py-2 border rounded-lg focus:ring-[#002B5B] focus:border-[#002B5B] ${errors.name ? 'border-red-300 bg-red-50' : 'border-slate-300'}`}
-                           placeholder="Ej: Licitación Aseo Urbano Zona Norte 2024"
+                           placeholder="Ej: Licitación Interventoría Obra Pública 2024"
                            value={formData.name}
                            onChange={(e) => setFormData({...formData, name: e.target.value})}
                          />

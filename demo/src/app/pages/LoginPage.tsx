@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react';
-import { Input } from '../components/ui/Input';
-import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/input';
+import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router';
 import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
 

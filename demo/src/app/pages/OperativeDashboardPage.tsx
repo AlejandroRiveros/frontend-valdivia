@@ -18,7 +18,6 @@ import {
   MapPin,
   Factory,
   Ban,
-  Calculator,
   FileCheck,
   RefreshCw,
   Search,
@@ -27,7 +26,7 @@ import {
   MoreHorizontal,
   Activity
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 import { Link, useNavigate } from 'react-router';
 import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
 
@@ -57,7 +56,7 @@ export default function OperativeDashboardPage() {
                 VALDIVIA
               </h1>
               <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
-                Panel de Control Operativo
+                Panel de Gestión Documental
               </p>
             </div>
           </div>
@@ -66,7 +65,7 @@ export default function OperativeDashboardPage() {
              {/* Indicador de Estado Discreto */}
             <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-100">
               <div className="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
-              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Sistema Operativo</span>
+              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Gestión Documental Activa</span>
             </div>
 
             <div className="flex items-center gap-4">
@@ -114,10 +113,10 @@ export default function OperativeDashboardPage() {
               />
               <StatusCard
                 title="Cumplimiento Documental"
-                value="Inconsistente"
-                trend="Diferencia detectada: 2.4%"
+                value="En revisión"
+                trend="2 soportes requieren subsanación"
                 status="warning"
-                icon={<Scale className="h-4 w-4" />}
+                icon={<FileWarning className="h-4 w-4" />}
                 highlight
               />
               <StatusCard 
@@ -144,7 +143,7 @@ export default function OperativeDashboardPage() {
                 color="blue"
               />
                <MiniStatusCard 
-                label="Reporte Mensual" 
+                label="Informe Contractual" 
                 value="En Borrador" 
                 icon={<FileCheck className="h-3 w-3" />} 
                 color="slate"
@@ -159,60 +158,42 @@ export default function OperativeDashboardPage() {
             {/* 3. Acciones Principales (Estilo Botones SaaS) */}
             <div className="space-y-6">
               
-              {/* Grupo: Gestión de Aprovechamiento */}
+              {/* Grupo: Gestión Documental Contractual */}
               <section className="bg-white rounded-xl border border-slate-100 shadow-sm p-1">
                 <div className="px-4 py-3 border-b border-slate-50 flex justify-between items-center">
                    <h3 className="text-xs font-bold text-[#002B5B] uppercase tracking-wider flex items-center gap-2">
-                    <Factory className="h-3.5 w-3.5" /> Operaciones Dec. 596
+                    <FileText className="h-3.5 w-3.5" /> Gestión Documental Contractual
                   </h3>
-                  <span className="text-[10px] text-slate-400 font-medium">Ciclo Activo: Octubre 2023</span>
+                  <span className="text-[10px] text-slate-400 font-medium">Periodo activo: Enero 2024</span>
                 </div>
                 
                 <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <ActionButton 
-                    icon={<MapPin />} 
-                    label="Reg. Microruta" 
-                    desc="Inicio de ruta"
-                    variant="normal" 
-                    href="/operative/collection" 
+                  <ActionButton
+                    icon={<Upload />}
+                    label="Radicar Documento"
+                    desc="Contrato o anexo"
+                    variant="normal"
+                    href="/operative/collection"
                   />
-                  <ActionButton 
-                    icon={<Truck />} 
-                    label="Reg. Transporte" 
-                    desc="Logística"
-                    variant="normal" 
+                  <ActionButton
+                    icon={<Search />}
+                    label="Revisar Soportes"
+                    desc="Checklist legal"
+                    variant="active"
+                    href="/operative/eca-classification"
                   />
-                  <ActionButton 
-                    icon={<Factory />} 
-                    label="Clasificación ECA" 
-                    desc="Separación"
-                    variant="active" 
-                    href="/operative/eca-classification" 
+                  <ActionButton
+                    icon={<FileCheck />}
+                    label="Conciliar Hitos"
+                    desc="Pagos y entregables"
+                    variant="critical"
+                    href="/operative/mass-balance"
                   />
-                  <ActionButton 
-                    icon={<Scale />} 
-                    label="Reg. Pesaje" 
-                    desc="Báscula"
-                    variant="blocked" 
-                  />
-                  <ActionButton 
-                    icon={<Ban />} 
-                    label="Reg. Rechazo" 
-                    desc="Disposición final"
-                    variant="warning" 
-                  />
-                  <ActionButton 
-                    icon={<Calculator />} 
-                    label="Balance Masas" 
-                    desc="Control técnico"
-                    variant="critical" 
-                    href="/operative/mass-balance" 
-                  />
-                  <ActionButton 
-                    icon={<FileCheck />} 
-                    label="Reporte Mensual" 
-                    desc="Cierre de ciclo"
-                    variant="normal" 
+                  <ActionButton
+                    icon={<Briefcase />}
+                    label="Expediente Digital"
+                    desc="Archivo contractual"
+                    variant="normal"
                   />
                 </div>
               </section>
@@ -245,22 +226,22 @@ export default function OperativeDashboardPage() {
 
             </div>
 
-            {/* 4. Flujo Operativo Visual (Refinado) */}
+            {/* 4. Flujo documental visual */}
             <section className="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-8">
-                 <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide">Trazabilidad del Ciclo</h3>
-                 <span className="text-[10px] bg-slate-50 text-slate-400 px-2 py-1 rounded border border-slate-100">ID: CYC-2023-10</span>
+                 <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide">Trazabilidad del Expediente</h3>
+                 <span className="text-[10px] bg-slate-50 text-slate-400 px-2 py-1 rounded border border-slate-100">ID: EXP-2024-001</span>
               </div>
               
               <div className="relative flex flex-col md:flex-row justify-between items-center gap-4 px-4">
                 {/* Linea de conexión sutil */}
                 <div className="absolute top-1/2 left-4 right-4 h-px bg-slate-100 -z-0 hidden md:block transform -translate-y-1/2"></div>
                 
-                <FlowStep step="01" label="Recuperación" status="completed" icon={<MapPin className="h-3.5 w-3.5" />} />
-                <FlowStep step="02" label="Transporte" status="completed" icon={<Truck className="h-3.5 w-3.5" />} />
-                <FlowStep step="03" label="Clasificación" status="active" icon={<Factory className="h-3.5 w-3.5" />} />
-                <FlowStep step="04" label="Pesaje" status="pending" icon={<Scale className="h-3.5 w-3.5" />} />
-                <FlowStep step="05" label="Comercial" status="locked" icon={<Activity className="h-3.5 w-3.5" />} />
+                <FlowStep step="01" label="Radicación" status="completed" icon={<FileText className="h-3.5 w-3.5" />} />
+                <FlowStep step="02" label="Revisión" status="completed" icon={<Search className="h-3.5 w-3.5" />} />
+                <FlowStep step="03" label="Subsanación" status="active" icon={<MessageSquare className="h-3.5 w-3.5" />} />
+                <FlowStep step="04" label="Firma" status="pending" icon={<FileCheck className="h-3.5 w-3.5" />} />
+                <FlowStep step="05" label="Archivo" status="locked" icon={<Briefcase className="h-3.5 w-3.5" />} />
               </div>
             </section>
 
@@ -283,27 +264,27 @@ export default function OperativeDashboardPage() {
                       <th className="px-6 py-3">Evento</th>
                       <th className="px-6 py-3">Ref. Contrato</th>
                       <th className="px-6 py-3">Detalle</th>
-                      <th className="px-6 py-3">Cantidad</th>
+                      <th className="px-6 py-3">Docs</th>
                       <th className="px-6 py-3">Estado</th>
                       <th className="px-6 py-3 text-right">Acción</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
                     <TableRow 
-                      date="20 Oct, 14:30" type="Clasificación ECA" contract="CT-892" material="Plástico PET" 
-                      qty="450 kg" status="Validado" statusType="success" 
+                      date="20 Oct, 14:30" type="Radicación contractual" contract="CT-892" material="Minuta y anexos" 
+                      qty="12 docs" status="Validado" statusType="success" 
                     />
                     <TableRow 
-                      date="20 Oct, 09:15" type="Recolección" contract="CT-892" material="Ruta Norte" 
-                      qty="-" status="Validado" statusType="success" 
+                      date="20 Oct, 09:15" type="Revisión jurídica" contract="CT-892" material="Póliza de cumplimiento" 
+                      qty="4 docs" status="Validado" statusType="success" 
                     />
                      <TableRow 
-                      date="19 Oct, 16:45" type="Pesaje" contract="CT-892" material="Cartón" 
-                      qty="1,200 kg" status="Rechazado" statusType="error" 
+                      date="19 Oct, 16:45" type="Subsanación" contract="CT-892" material="CDP faltante" 
+                      qty="1 soporte" status="Devuelto" statusType="error" 
                     />
                     <TableRow 
-                      date="18 Oct, 10:00" type="Documentación" contract="General" material="Seguridad Social" 
-                      qty="-" status="Pendiente" statusType="warning" 
+                      date="18 Oct, 10:00" type="Control documental" contract="General" material="Seguridad Social" 
+                      qty="2 docs" status="Pendiente" statusType="warning" 
                     />
                   </tbody>
                 </table>
@@ -326,8 +307,8 @@ export default function OperativeDashboardPage() {
               
               <div className="p-4 space-y-3 flex-1 bg-gradient-to-b from-red-50/10 to-transparent">
                 <AlertItem 
-                  title="Báscula sin calibración" 
-                  desc="Certificado vencido hace 3 días. Bloquea pesaje."
+                  title="Póliza próxima a vencer" 
+                  desc="Vigencia termina en 3 días. Bloquea aprobación."
                   severity="critical"
                 />
                 <AlertItem 
@@ -336,20 +317,20 @@ export default function OperativeDashboardPage() {
                   severity="critical"
                 />
                 <AlertItem 
-                  title="Diferencia Balance" 
-                  desc="Inconsistencia de 50kg en preliminar."
+                  title="Soporte presupuestal faltante" 
+                  desc="El RP no coincide con el valor del hito."
                   severity="warning"
                 />
                 <AlertItem 
-                  title="ECA No Registrada" 
-                  desc="Formulario incompleto."
+                  title="Expediente SECOP incompleto" 
+                  desc="Faltan anexos obligatorios."
                   severity="warning"
                 />
               </div>
               
               <div className="p-4 bg-slate-50 border-t border-slate-100 text-center">
                 <p className="text-[10px] text-slate-400 mb-3 leading-relaxed">
-                  El sistema bloquea operaciones automáticamente según <span className="font-bold text-slate-600">Decreto 596 de 2016</span>.
+                  El sistema bloquea aprobaciones si existen soportes contractuales vencidos o incompletos.
                 </p>
                 <Button variant="outline" size="sm" className="w-full text-xs h-8 bg-white hover:bg-slate-50 text-slate-600 border-slate-200">
                   Gestión de Cumplimiento
@@ -422,39 +403,33 @@ function MiniStatusCard({ label, value, icon, color }: MiniStatusCardProps) {
     )
 }
 
-interface ActionButtonProps { icon: React.ReactElement; label: string; desc: string; variant: 'active' | 'normal' | 'blocked' | 'warning' | 'critical'; href?: string; }
+interface ActionButtonProps { icon: React.ReactElement; label: string; desc: string; variant: 'active' | 'normal' | 'critical'; href?: string; }
 function ActionButton({ icon, label, desc, variant, href }: ActionButtonProps) {
   const styles = {
     active: 'bg-blue-50/50 border-blue-200 text-[#002B5B] shadow-sm ring-1 ring-blue-100 hover:shadow-md',
     normal: 'bg-white border-slate-100 text-slate-600 shadow-sm hover:border-slate-300 hover:shadow hover:text-[#002B5B]',
-    blocked: 'bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed opacity-80',
-    warning: 'bg-amber-50/30 border-amber-100 text-amber-800 hover:bg-amber-50 hover:border-amber-200',
-    critical: 'bg-white border-red-100 text-slate-700 hover:border-red-200 hover:shadow-sm ring-1 ring-transparent hover:ring-red-50'
+    critical: 'bg-white border-amber-100 text-slate-700 hover:border-amber-200 hover:shadow-sm ring-1 ring-transparent hover:ring-amber-50'
   };
 
   const content = (
-    <div className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all duration-200 text-center h-32 w-full group ${styles[variant as keyof typeof styles]}`}>
+    <div className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all duration-200 text-center h-32 w-full group ${styles[variant]}`}>
        <div className={`mb-3 p-2 rounded-lg transition-transform group-hover:scale-110 group-hover:-translate-y-1 ${
-           variant === 'active' ? 'bg-white text-[#002B5B] shadow-sm' : 
-           variant === 'blocked' ? 'bg-slate-100 text-slate-400' :
+           variant === 'active' ? 'bg-white text-[#002B5B] shadow-sm' :
            'bg-slate-50 text-slate-500 group-hover:bg-white group-hover:text-[#002B5B] group-hover:shadow-sm'
        }`}>
           {React.cloneElement(icon, { size: 20, strokeWidth: 1.5 })}
        </div>
        <span className="text-xs font-bold leading-tight px-1 mb-1">{label}</span>
        <span className="text-[10px] font-medium opacity-70 leading-none">{desc}</span>
-       
-       {variant === 'active' && (
-           <span className="mt-2 h-1 w-8 bg-blue-500 rounded-full opacity-50"></span>
-       )}
+       {variant === 'active' && <span className="mt-2 h-1 w-8 bg-blue-500 rounded-full opacity-50"></span>}
     </div>
   );
 
-  if (href && variant !== 'blocked') {
+  if (href) {
     return <Link to={href} className="w-full">{content}</Link>;
   }
 
-  return <button className="w-full" disabled={variant === 'blocked'}>{content}</button>;
+  return <button className="w-full">{content}</button>;
 }
 
 interface SecondaryActionButtonProps { icon: React.ReactElement; label: string; highlight?: boolean; }

@@ -18,7 +18,7 @@ import {
   Briefcase
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
 import DirectorHeader from '../components/director/DirectorHeader';
 
@@ -64,13 +64,13 @@ export default function ContractFilePage() {
     startDate: '2023-01-15',
     endDate: '2023-12-31',
     totalValue: 1200000000, // 1.200 M
-    contractor: 'Unión Temporal Aseo Norte',
-    object: 'Prestación del servicio público de aseo y gestión integral de residuos sólidos en la zona norte.'
+    contractor: 'Consorcio Infraestructura Norte',
+    object: 'Seguimiento, supervisión y gestión documental de contratos gubernamentales de infraestructura municipal.'
   });
 
   // Deliverables Plan
   const [deliverables, setDeliverables] = useState<Deliverable[]>([
-    { id: 'H1', name: 'Plan Operativo Inicial', date: '2023-02-01', amount: 120000000, status: 'approved' },
+    { id: 'H1', name: 'Plan de Gestión Documental Inicial', date: '2023-02-01', amount: 120000000, status: 'approved' },
     { id: 'H2', name: 'Informe Trimestral Q1', date: '2023-04-15', amount: 300000000, status: 'approved' },
     { id: 'H3', name: 'Informe Trimestral Q2', date: '2023-07-15', amount: 300000000, status: 'approved' },
     { id: 'H4', name: 'Informe Trimestral Q3', date: '2023-10-15', amount: 300000000, status: 'pending' },
@@ -84,8 +84,8 @@ export default function ContractFilePage() {
 
   // Audit Log
   const [auditLog] = useState<AuditLog[]>([
-    { id: 'L1', date: '2023-10-01 09:30', action: 'Validación Hito', user: 'Director Operativo', details: 'Aprobación Informe Q3' },
-    { id: 'L2', date: '2023-07-16 14:20', action: 'Pago Autorizado', user: 'Director Operativo', details: 'Autorización desembolso Hito 2' },
+    { id: 'L1', date: '2023-10-01 09:30', action: 'Validación Hito', user: 'Director de Contratación', details: 'Aprobación Informe Q3' },
+    { id: 'L2', date: '2023-07-16 14:20', action: 'Pago Autorizado', user: 'Director de Contratación', details: 'Autorización desembolso Hito 2' },
     { id: 'L3', date: '2023-01-15 08:00', action: 'Inicio Contrato', user: 'Admin Sistema', details: 'Cargue inicial del contrato' },
   ]);
 
@@ -117,7 +117,7 @@ export default function ContractFilePage() {
       document: newMod.document || '',
       valueImpact: newMod.valueImpact || 0,
       timeImpact: newMod.timeImpact || 'N/A',
-      user: 'Director Operativo'
+      user: 'Director de Contratación'
     };
 
     setModifications([mod, ...modifications]);

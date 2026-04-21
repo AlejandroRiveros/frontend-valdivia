@@ -13,20 +13,20 @@ import {
   Activity
 } from 'lucide-react';
 import { Link } from 'react-router';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 
 export default function MassBalancePage() {
   // Mock Data for demonstration
-  const [currentMonth] = useState('Octubre 2023');
+  const [currentMonth] = useState('Enero 2024');
   
   // Summary Data
   const summary = {
-    collected: 15450,
-    classified: 14100,
-    rejected: 980,
-    commercialized: 13800, // Part of classified that was sold
-    difference: 370, // 15450 - (14100 + 980) = 370
-    differencePercent: 2.4, // (370 / 15450) * 100
+    collected: 128,
+    classified: 119,
+    rejected: 6,
+    commercialized: 87, // Approved documents ready for payment
+    difference: 3, // Pending documents to reconcile
+    differencePercent: 2.4, // percentage of pending documents
   };
 
   // Determine global status based on difference
@@ -44,12 +44,12 @@ export default function MassBalancePage() {
             </Link>
             <div>
               <h1 className="text-xl font-bold text-[#002B5B] leading-none flex items-center gap-3">
-                Balance de Masas
+                Consistencia Contractual
                 <span className="px-2 py-0.5 rounded text-xs bg-slate-100 text-slate-600 border border-slate-200 font-medium">
                    {currentMonth}
                 </span>
               </h1>
-              <p className="text-xs text-slate-500 mt-1">Consulta Operativa • Dec. 596 Art. 2.3.2.5.3.1</p>
+              <p className="text-xs text-slate-500 mt-1">Control documental • Contratos gubernamentales</p>
             </div>
           </div>
           
@@ -91,37 +91,37 @@ export default function MassBalancePage() {
         {/* 2. Resumen General (KPI Cards) */}
         <section className="grid grid-cols-2 lg:grid-cols-5 gap-4">
             <StatCard 
-                label="Total Recolectado" 
+                label="Docs Radicados" 
                 value={summary.collected} 
-                unit="Kg" 
+                unit="Docs" 
                 icon={<Activity className="h-4 w-4" />}
                 color="blue"
             />
             <StatCard 
-                label="Total Clasificado" 
+                label="Docs Validados" 
                 value={summary.classified} 
-                unit="Kg" 
+                unit="Docs" 
                 icon={<Scale className="h-4 w-4" />}
                 color="blue"
             />
             <StatCard 
-                label="Total Rechazo" 
+                label="Subsanaciones" 
                 value={summary.rejected} 
-                unit="Kg" 
+                unit="Docs" 
                 icon={<Ban className="h-4 w-4" />}
                 color="amber"
             />
              <StatCard 
-                label="Comercializado" 
+                label="Autorizados" 
                 value={summary.commercialized} 
-                unit="Kg" 
+                unit="Docs" 
                 icon={<CheckCircle className="h-4 w-4" />}
                 color="emerald"
             />
             <StatCard 
-                label="Diferencia Neta" 
+                label="Pendientes" 
                 value={summary.difference} 
-                unit="Kg" 
+                unit="Docs" 
                 subValue={`${summary.differencePercent}%`}
                 icon={<AlertTriangle className="h-4 w-4" />}
                 color={globalStatus === 'optimal' ? 'emerald' : globalStatus === 'warning' ? 'amber' : 'red'}
@@ -136,8 +136,8 @@ export default function MassBalancePage() {
                 <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                         <div className="flex items-center gap-2">
-                             <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide">Detalle de Operaciones</h2>
-                             <span className="px-2 py-0.5 bg-slate-200 text-slate-600 rounded text-[10px] font-bold">Octubre</span>
+                             <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide">Detalle de Radicados</h2>
+                             <span className="px-2 py-0.5 bg-slate-200 text-slate-600 rounded text-[10px] font-bold">Enero</span>
                         </div>
                         <div className="flex items-center gap-2">
                              <Button variant="ghost" size="sm" className="h-8 text-slate-500 border-slate-200 hover:bg-white">
@@ -154,22 +154,22 @@ export default function MassBalancePage() {
                             <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
                                 <tr>
                                     <th className="px-4 py-3 font-medium">Fecha</th>
-                                    <th className="px-4 py-3 font-medium">Microruta</th>
-                                    <th className="px-4 py-3 font-medium">Material</th>
-                                    <th className="px-4 py-3 text-right font-medium">Recolección</th>
-                                    <th className="px-4 py-3 text-right font-medium">Clasificado</th>
-                                    <th className="px-4 py-3 text-right font-medium">Rechazo</th>
-                                    <th className="px-4 py-3 text-right font-medium">Dif.</th>
+                                    <th className="px-4 py-3 font-medium">Área</th>
+                                    <th className="px-4 py-3 font-medium">Documento</th>
+                                    <th className="px-4 py-3 text-right font-medium">Radicados</th>
+                                    <th className="px-4 py-3 text-right font-medium">Validados</th>
+                                    <th className="px-4 py-3 text-right font-medium">Obs.</th>
+                                    <th className="px-4 py-3 text-right font-medium">Pend.</th>
                                     <th className="px-4 py-3 text-center font-medium">Estado</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
-                                <TableRow date="15/10" route="MR-001" material="Plástico" col={500} cla={480} rej={15} diff={-5} status="ok" />
-                                <TableRow date="15/10" route="MR-001" material="Papel" col={300} cla={290} rej={10} diff={0} status="ok" />
-                                <TableRow date="14/10" route="MR-002" material="Vidrio" col={800} cla={750} rej={30} diff={-20} status="warning" />
-                                <TableRow date="14/10" route="MR-002" material="Cartón" col={450} cla={445} rej={5} diff={0} status="ok" />
-                                <TableRow date="13/10" route="MR-003" material="Metal" col={200} cla={190} rej={5} diff={-5} status="ok" />
-                                <TableRow date="12/10" route="MR-001" material="Plástico" col={600} cla={500} rej={50} diff={-50} status="error" />
+                                <TableRow date="15/01" route="Supervisión" material="Informe mensual" col={12} cla={12} rej={0} diff={0} status="ok" />
+                                <TableRow date="15/01" route="Jurídica" material="Póliza de cumplimiento" col={4} cla={4} rej={0} diff={0} status="ok" />
+                                <TableRow date="14/01" route="Financiera" material="Cuenta de cobro" col={8} cla={7} rej={1} diff={0} status="warning" />
+                                <TableRow date="14/01" route="Contratación" material="Otro sí" col={6} cla={6} rej={0} diff={0} status="ok" />
+                                <TableRow date="13/01" route="Archivo" material="Acta de inicio" col={5} cla={5} rej={0} diff={0} status="ok" />
+                                <TableRow date="12/01" route="Financiera" material="CDP / RP" col={7} cla={5} rej={1} diff={-1} status="error" />
                             </tbody>
                         </table>
                     </div>
@@ -182,21 +182,21 @@ export default function MassBalancePage() {
                 {/* 4. Panel de Consistencia Automática */}
                 <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
                     <h3 className="text-sm font-bold text-slate-800 uppercase mb-4 flex items-center gap-2">
-                        <Activity className="h-4 w-4" /> Ecuación de Balance
+                        <Activity className="h-4 w-4" /> Regla de Consistencia
                     </h3>
                     
                     <div className="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-100">
                         <div className="flex flex-col items-center justify-center space-y-2 font-mono text-sm text-slate-600">
                             <div className="flex items-center gap-2">
-                                <span className="font-bold text-slate-900">Recolección</span>
+                                <span className="font-bold text-slate-900">Radicados</span>
                                 <span>=</span>
-                                <span className="text-[#002B5B]">Clasificación</span>
+                                <span className="text-[#002B5B]">Validados</span>
                                 <span>+</span>
-                                <span className="text-amber-600">Rechazo</span>
+                                <span className="text-amber-600">Observados</span>
                             </div>
                             <div className="w-full h-px bg-slate-300"></div>
                             <div className="text-xs uppercase font-bold tracking-wider text-slate-400">
-                                Margen de Tolerancia Legal: +/- 5%
+                                Tolerancia de pendientes documentales: +/- 5%
                             </div>
                         </div>
                     </div>
@@ -213,14 +213,14 @@ export default function MassBalancePage() {
                             
                             <div>
                                 <h4 className="font-bold text-sm">
-                                    {globalStatus === 'optimal' ? 'Balance Consistente' :
-                                     globalStatus === 'warning' ? 'Diferencia Leve Detectada' :
-                                     'Inconsistencia Crítica'}
+                                    {globalStatus === 'optimal' ? 'Expediente Consistente' :
+                                     globalStatus === 'warning' ? 'Pendientes Detectados' :
+                                     'Inconsistencia Documental Crítica'}
                                 </h4>
                                 <p className="text-xs mt-1 opacity-90 leading-snug">
-                                    {globalStatus === 'optimal' ? 'La diferencia se encuentra dentro del rango operativo normal (< 1%).' :
-                                     globalStatus === 'warning' ? 'Existe una diferencia superior al promedio histórico, pero dentro del margen legal (< 5%).' :
-                                     'La diferencia supera el 5% permitido. Se ha bloqueado la generación del reporte mensual.'}
+                                    {globalStatus === 'optimal' ? 'Los documentos pendientes están dentro del rango aceptable (< 1%).' :
+                                     globalStatus === 'warning' ? 'Existen pendientes por subsanar, pero dentro del margen de control (< 5%).' :
+                                     'Los pendientes superan el 5% permitido. Se bloquea la autorización hasta subsanar.'}
                                 </p>
                             </div>
                         </div>
@@ -230,30 +230,30 @@ export default function MassBalancePage() {
                 {/* 5. Alertas Normativas */}
                 <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
                     <div className="px-5 py-3 border-b border-slate-100 bg-slate-50/50">
-                        <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide">Validaciones Normativas (SSPD)</h3>
+                        <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide">Validaciones Documentales</h3>
                     </div>
                     <div className="divide-y divide-slate-100">
                         <AlertItem 
-                            label="Diferencia Total < 5%" 
+                            label="Pendientes documentales < 5%" 
                             status={summary.differencePercent < 5 ? 'pass' : 'fail'} 
                         />
                         <AlertItem 
-                            label="Pesajes Validados" 
+                            label="Firmas digitales validadas" 
                             status="pass" 
                         />
                         <AlertItem 
-                            label="ECA Registrada en SUI" 
+                            label="Expediente actualizado en SECOP" 
                             status="pass" 
                         />
                          <AlertItem 
-                            label="Básculas Calibradas" 
+                            label="Pólizas vigentes" 
                             status="warning"
-                            detail="Certificado B-002 próximo a vencer" 
+                            detail="Póliza P-002 próxima a vencer" 
                         />
                          <AlertItem 
-                            label="Soportes de Comercialización" 
+                            label="Soportes presupuestales" 
                             status="fail"
-                            detail="Faltan 2 facturas de venta"
+                            detail="Faltan 2 CDP/RP"
                         />
                     </div>
                 </div>
@@ -261,7 +261,7 @@ export default function MassBalancePage() {
                 {/* 6. Trazabilidad */}
                 <div className="text-center space-y-1 pt-4">
                     <p className="text-[10px] text-slate-400 font-mono">
-                        Cálculo generado automáticamente el {new Date().toLocaleDateString()}
+                        Validación generada automáticamente el {new Date().toLocaleDateString()}
                     </p>
                     <p className="text-[10px] text-slate-400">
                         Usuario consulta: Carlos Rodríguez

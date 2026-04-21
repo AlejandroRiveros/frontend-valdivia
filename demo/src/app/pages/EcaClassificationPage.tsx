@@ -14,7 +14,7 @@ import {
   Factory
 } from 'lucide-react';
 import { Link } from 'react-router';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 
 // Interfaces for type safety
 interface MaterialRow {
@@ -124,8 +124,8 @@ export default function EcaClassificationPage() {
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div>
-              <h1 className="text-lg font-bold text-[#002B5B] leading-none">Clasificación y Pesaje ECA</h1>
-              <p className="text-xs text-slate-500 mt-1">Control de Aprovechamiento • Dec. 596</p>
+              <h1 className="text-lg font-bold text-[#002B5B] leading-none">Validación Documental y Soportes</h1>
+              <p className="text-xs text-slate-500 mt-1">Control contractual • Gestión documental gubernamental</p>
             </div>
           </div>
           
@@ -154,31 +154,31 @@ export default function EcaClassificationPage() {
         <section className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
             <div className="px-6 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
                 <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
-                    <Info className="h-4 w-4" /> Datos de Ingreso
+                    <Info className="h-4 w-4" /> Datos de Revisión
                 </h2>
-                <span className="text-xs font-mono text-slate-400">REF: ECA-{new Date().getFullYear()}-0089</span>
+                <span className="text-xs font-mono text-slate-400">REF: DOC-{new Date().getFullYear()}-0089</span>
             </div>
             
             <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 <div className="space-y-2">
-                    <label className="block text-xs font-bold text-slate-600 uppercase">ECA de Destino</label>
+                    <label className="block text-xs font-bold text-slate-600 uppercase">Expediente / Contrato</label>
                     <div className="relative">
                         <select 
                             className="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-[#002B5B] focus:border-[#002B5B]"
                             value={ecaId}
                             onChange={(e) => setEcaId(e.target.value)}
                         >
-                            <option value="">Seleccione ECA...</option>
-                            <option value="ECA-CENTRO">ECA Centro - NU: 99281</option>
-                            <option value="ECA-NORTE">ECA Norte - NU: 88123</option>
+                            <option value="">Seleccione expediente...</option>
+                            <option value="CT-2023-001">CT-2023-001 - Obra pública municipal</option>
+                            <option value="CT-2023-002">CT-2023-002 - Interventoría técnica</option>
                         </select>
                         <Factory className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                     </div>
                 </div>
 
                 <div className="space-y-2">
-                    <label className="block text-xs font-bold text-slate-600 uppercase">Báscula Utilizada</label>
+                    <label className="block text-xs font-bold text-slate-600 uppercase">Tipo de Revisión</label>
                     <div className="relative">
                         <select 
                             className={`w-full pl-9 pr-3 py-2 border rounded-md text-sm focus:ring-2 focus:outline-none ${
@@ -189,28 +189,28 @@ export default function EcaClassificationPage() {
                             value={scaleId}
                             onChange={(e) => setScaleId(e.target.value)}
                         >
-                            <option value="">Seleccione Báscula...</option>
-                            <option value="SCL-001">Báscula #1 (Cert. Vigente)</option>
-                            <option value="SCL-002">Báscula #2 (Cert. Vencido)</option>
+                            <option value="">Seleccione revisión...</option>
+                            <option value="SCL-001">Checklist contractual vigente</option>
+                            <option value="SCL-002">Checklist vencido o incompleto</option>
                         </select>
                         <Scale className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                     </div>
                     {scaleStatus === 'expired' && (
                         <p className="text-[10px] font-bold text-red-600 flex items-center gap-1 animate-pulse">
-                            <Ban className="h-3 w-3" /> BLOQUEO: Equipo sin calibración vigente.
+                            <Ban className="h-3 w-3" /> BLOQUEO: checklist vencido o incompleto.
                         </p>
                     )}
                 </div>
 
                 <div className="space-y-2">
-                    <label className="block text-xs font-bold text-slate-600 uppercase">Peso Bruto Entrada (Kg)</label>
+                    <label className="block text-xs font-bold text-slate-600 uppercase">Folios Recibidos</label>
                     <input 
                         type="number" 
                         placeholder="0.00"
                         className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm font-mono focus:ring-[#002B5B] focus:border-[#002B5B]"
                         onChange={(e) => setEntryWeight(parseFloat(e.target.value) || 0)}
                     />
-                    <p className="text-[10px] text-slate-400">Peso total reportado en ingreso</p>
+                    <p className="text-[10px] text-slate-400">Total de folios reportados al radicar</p>
                 </div>
 
             </div>
@@ -222,7 +222,7 @@ export default function EcaClassificationPage() {
             <div className="lg:col-span-2 space-y-6">
                 <section className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                        <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide">Clasificación de Materiales</h2>
+                        <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide">Clasificación de Documentos</h2>
                         <Button size="sm" variant="outline" onClick={addMaterialRow} className="text-[#002B5B] border-slate-200 hover:bg-slate-50">
                             <Plus className="h-3 w-3 mr-1" /> Agregar Fila
                         </Button>
@@ -232,9 +232,9 @@ export default function EcaClassificationPage() {
                         <table className="w-full text-sm text-left">
                             <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
                                 <tr>
-                                    <th className="px-4 py-3 w-[180px]">Familia</th>
-                                    <th className="px-4 py-3">Subtipo</th>
-                                    <th className="px-4 py-3 w-[120px]">Peso (Kg)</th>
+                                    <th className="px-4 py-3 w-[180px]">Categoría</th>
+                                    <th className="px-4 py-3">Documento / Soporte</th>
+                                    <th className="px-4 py-3 w-[120px]">Folios</th>
                                     <th className="px-4 py-3">Observación</th>
                                     <th className="px-4 py-3 w-[50px]"></th>
                                 </tr>
@@ -249,17 +249,17 @@ export default function EcaClassificationPage() {
                                                 onChange={(e) => updateMaterial(row.id, 'type', e.target.value)}
                                             >
                                                 <option value="">Seleccionar...</option>
-                                                <option value="PLASTICO">Plástico</option>
-                                                <option value="PAPEL">Papel / Cartón</option>
-                                                <option value="VIDRIO">Vidrio</option>
-                                                <option value="METAL">Metales</option>
+                                                <option value="PLASTICO">Contractual</option>
+                                                <option value="PAPEL">Financiero</option>
+                                                <option value="VIDRIO">Jurídico</option>
+                                                <option value="METAL">Supervisión</option>
                                                 <option value="OTRO">Otros</option>
                                             </select>
                                         </td>
                                         <td className="px-4 py-2">
                                             <input 
                                                 type="text" 
-                                                placeholder="Ej. PET Cristal"
+                                                placeholder="Ej. Póliza de cumplimiento"
                                                 className="w-full border border-slate-200 rounded px-2 py-1.5 focus:border-[#002B5B] outline-none"
                                                 value={row.subtype}
                                                 onChange={(e) => updateMaterial(row.id, 'subtype', e.target.value)}
@@ -295,7 +295,7 @@ export default function EcaClassificationPage() {
                             </tbody>
                             <tfoot className="bg-slate-50 border-t border-slate-200 font-bold text-slate-700">
                                 <tr>
-                                    <td colSpan={2} className="px-4 py-3 text-right uppercase text-xs">Total Clasificado:</td>
+                                    <td colSpan={2} className="px-4 py-3 text-right uppercase text-xs">Total Validado:</td>
                                     <td className="px-4 py-3 text-right font-mono">{totalClassified.toFixed(2)}</td>
                                     <td colSpan={2}></td>
                                 </tr>
@@ -309,10 +309,10 @@ export default function EcaClassificationPage() {
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-sm font-bold text-slate-800 uppercase flex items-center gap-2">
                             <AlertTriangle className="h-4 w-4 text-amber-500" />
-                            Registro de Rechazo
+                            Registro de Subsanaciones
                         </h3>
                         <div className="flex items-center gap-3">
-                            <span className="text-xs text-slate-500">¿Hubo material rechazado?</span>
+                            <span className="text-xs text-slate-500">¿Requiere subsanación?</span>
                             <button 
                                 type="button"
                                 onClick={() => setHasRejection(!hasRejection)}
@@ -326,7 +326,7 @@ export default function EcaClassificationPage() {
                     {hasRejection && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2">
                             <div className="space-y-2">
-                                <label className="block text-xs font-bold text-slate-600">Peso Rechazado (Kg)</label>
+                                <label className="block text-xs font-bold text-slate-600">Folios con observación</label>
                                 <input 
                                     type="number" 
                                     className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm"
@@ -336,21 +336,21 @@ export default function EcaClassificationPage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="block text-xs font-bold text-slate-600">Motivo de Rechazo</label>
+                                <label className="block text-xs font-bold text-slate-600">Motivo de Subsanación</label>
                                 <select 
                                     className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm"
                                     value={rejectionReason}
                                     onChange={(e) => setRejectionReason(e.target.value)}
                                 >
                                     <option value="">Seleccione motivo...</option>
-                                    <option value="HUMEDAD">Exceso de humedad</option>
-                                    <option value="CONTAMINACION">Contaminación cruzada</option>
-                                    <option value="NO_APROVECHABLE">Material no aprovechable</option>
-                                    <option value="PELIGROSO">Residuo Peligroso</option>
+                                    <option value="HUMEDAD">Documento ilegible</option>
+                                    <option value="CONTAMINACION">Soporte incompleto</option>
+                                    <option value="NO_APROVECHABLE">Firma faltante</option>
+                                    <option value="PELIGROSO">Vigencia vencida</option>
                                 </select>
                             </div>
                             <div className="sm:col-span-2 p-3 bg-amber-50 border border-amber-100 rounded text-xs text-amber-800">
-                                <strong>Nota:</strong> El material de rechazo debe ser dispuesto según la Macroruta de recolección ordinaria.
+                                <strong>Nota:</strong> Toda subsanación debe quedar asociada al expediente contractual y a su responsable.
                             </div>
                         </div>
                     )}
@@ -364,15 +364,15 @@ export default function EcaClassificationPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                          <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-slate-50 cursor-pointer h-32">
                             <Camera className="h-6 w-6 text-slate-400 mb-2" />
-                            <span className="text-xs font-medium text-slate-600">Foto Material</span>
+                            <span className="text-xs font-medium text-slate-600">Documento principal</span>
                          </div>
                          <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-slate-50 cursor-pointer h-32">
                             <Scale className="h-6 w-6 text-slate-400 mb-2" />
-                            <span className="text-xs font-medium text-slate-600">Foto Báscula</span>
+                            <span className="text-xs font-medium text-slate-600">Acta / certificado</span>
                          </div>
                          <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-slate-50 cursor-pointer h-32">
                             <FileText className="h-6 w-6 text-slate-400 mb-2" />
-                            <span className="text-xs font-medium text-slate-600">Planilla Física</span>
+                            <span className="text-xs font-medium text-slate-600">Soporte escaneado</span>
                          </div>
                     </div>
                 </section>
@@ -381,23 +381,23 @@ export default function EcaClassificationPage() {
             {/* 5. Summary & Consistency Panel (Sticky Sidebar) */}
             <aside className="space-y-6">
                 <div className="bg-[#002B5B] rounded-lg shadow-lg text-white p-6 sticky top-24">
-                    <h3 className="text-sm font-bold uppercase tracking-wider mb-6 opacity-80 border-b border-white/20 pb-2">Balance de Masas</h3>
+                    <h3 className="text-sm font-bold uppercase tracking-wider mb-6 opacity-80 border-b border-white/20 pb-2">Consistencia Documental</h3>
                     
                     <div className="space-y-4">
                         <div className="flex justify-between items-center text-sm">
-                            <span className="opacity-70">Peso Ingreso (Bruto):</span>
-                            <span className="font-mono font-bold text-lg">{entryWeight.toFixed(2)} <span className="text-xs opacity-50">Kg</span></span>
+                            <span className="opacity-70">Folios recibidos:</span>
+                            <span className="font-mono font-bold text-lg">{entryWeight.toFixed(2)} <span className="text-xs opacity-50">folios</span></span>
                         </div>
                         
                         <div className="flex justify-between items-center text-sm">
-                            <span className="opacity-70">Total Clasificado:</span>
-                            <span className="font-mono font-bold text-lg">{totalClassified.toFixed(2)} <span className="text-xs opacity-50">Kg</span></span>
+                            <span className="opacity-70">Total Validado:</span>
+                            <span className="font-mono font-bold text-lg">{totalClassified.toFixed(2)} <span className="text-xs opacity-50">folios</span></span>
                         </div>
 
                         {hasRejection && (
                             <div className="flex justify-between items-center text-sm text-amber-300">
-                                <span className="opacity-70">Total Rechazo:</span>
-                                <span className="font-mono font-bold text-lg">{rejectionWeight.toFixed(2)} <span className="text-xs opacity-50">Kg</span></span>
+                                <span className="opacity-70">Folios observados:</span>
+                                <span className="font-mono font-bold text-lg">{rejectionWeight.toFixed(2)} <span className="text-xs opacity-50">folios</span></span>
                             </div>
                         )}
 
@@ -409,7 +409,7 @@ export default function EcaClassificationPage() {
                                 difference === 0 ? 'text-emerald-400' :
                                 consistency === 'error' ? 'text-red-400' : 'text-amber-400'
                             }`}>
-                                {(difference > 0 ? '+' : '') + difference.toFixed(2)} Kg
+                                {(difference > 0 ? '+' : '') + difference.toFixed(2)} folios
                             </span>
                         </div>
                     </div>
@@ -432,14 +432,14 @@ export default function EcaClassificationPage() {
                                     consistency === 'warning' ? 'text-amber-100' :
                                     'text-red-100'
                                 }`}>
-                                    {consistency === 'consistent' ? 'Balance Consistente' :
+                                    {consistency === 'consistent' ? 'Expediente Consistente' :
                                      consistency === 'warning' ? 'Revisar Diferencias' :
                                      'Inconsistencia Grave'}
                                 </p>
                                 <p className="text-[10px] opacity-70 leading-tight mt-1">
-                                    {consistency === 'consistent' ? 'El peso distribuido coincide con el ingreso.' :
-                                     consistency === 'warning' ? 'Existe una variación leve aceptable.' :
-                                     'La diferencia excede el margen de tolerancia (1%).'}
+                                    {consistency === 'consistent' ? 'Los folios validados coinciden con el radicado.' :
+                                     consistency === 'warning' ? 'Existe una diferencia documental menor por revisar.' :
+                                     'La diferencia supera el margen permitido para aprobación.'}
                                 </p>
                             </div>
                         </div>
@@ -452,7 +452,7 @@ export default function EcaClassificationPage() {
                             disabled={!isFormValid}
                         >
                             <Save className="h-4 w-4 mr-2" />
-                            Registrar Ingreso
+                            Registrar Validación
                         </Button>
                         <Button variant="outline" className="w-full border-white/30 text-white hover:bg-white/10 hover:text-white">
                             Guardar Borrador
@@ -462,8 +462,8 @@ export default function EcaClassificationPage() {
 
                 <div className="p-4 bg-slate-100 rounded-lg text-xs text-slate-500 text-center leading-relaxed">
                     <p>
-                        Este registro tiene carácter legal ante la SSPD. 
-                        Asegure la veracidad de la información ingresada.
+                        Este registro tiene carácter oficial para auditoría contractual. 
+                        Asegure la veracidad de los soportes ingresados.
                         <br />
                         <strong>IP Auditada:</strong> 192.168.1.XX
                     </p>

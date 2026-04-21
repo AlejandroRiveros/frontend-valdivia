@@ -36,7 +36,7 @@ const kpiData = [
   { title: 'Documentos aprobados', value: '0', unit: 'Docs', trend: '-', status: 'success', icon: CheckCircle2 },
   { title: 'Documentos rechazados', value: '0', unit: 'Docs', trend: '-', status: 'warning', icon: XCircle },
   { title: 'Cumplimiento global', value: '0%', unit: 'Eficiencia', trend: '-', status: 'success', icon: ScaleIcon },
-  { title: 'Ingresos DINC', value: '$0', unit: 'COP', trend: '-', status: 'success', icon: MoneyIcon },
+  { title: 'Pagos autorizados', value: '$0', unit: 'COP', trend: '-', status: 'success', icon: MoneyIcon },
   { title: 'Cumplimiento doc.', value: '0%', unit: 'Global', trend: '-', status: 'warning', icon: FileCheck },
 ];
 
@@ -333,8 +333,8 @@ export default function DirectorDashboardPage() {
                   </div>
                   <span className="rounded-full border border-red-100 bg-red-50 px-2 py-1 text-[10px] font-bold uppercase text-red-600">Bloqueado</span>
                 </div>
-                <h4 className="mb-1 font-semibold text-slate-700">Reporte SUI - Acueducto</h4>
-                <p className="mb-4 text-xs text-slate-500">Requiere correccion en balance de masas y soporte contractual.</p>
+                <h4 className="mb-1 font-semibold text-slate-700">Expediente SECOP - Contrato de Obra</h4>
+                <p className="mb-4 text-xs text-slate-500">Requiere corrección en consistencia documental y soporte contractual.</p>
                 <button
                   onClick={() => navigate('/director/contract-file?contractId=CT-2023-089')}
                   className="w-full rounded-lg border border-slate-300 bg-white py-2 text-sm font-medium text-slate-600 transition-colors hover:border-[#002B5B] hover:text-[#002B5B]"
@@ -358,7 +358,7 @@ export default function DirectorDashboardPage() {
                     <tr>
                       <th className="px-6 py-3 font-semibold">Contrato / Operador</th>
                       <th className="px-6 py-3 text-right font-semibold">Documentos</th>
-                      <th className="px-6 py-3 text-center font-semibold">Balance</th>
+                      <th className="px-6 py-3 text-center font-semibold">Conciliación</th>
                       <th className="px-6 py-3 text-center font-semibold">Cumplimiento</th>
                       <th className="px-6 py-3 font-semibold">Estado</th>
                     </tr>

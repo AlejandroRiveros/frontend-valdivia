@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Users, UserPlus, FileEdit, Trash2, Mail, AtSign, CheckCircle } from 'lucide-react';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 import DirectorHeader from '../components/director/DirectorHeader';
 import { apiFetch } from '../../lib/api';
 

@@ -17,7 +17,7 @@ import {
   Scale
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 import DirectorHeader from '../components/director/DirectorHeader';
 
 // --- Types ---
@@ -41,8 +41,8 @@ const MOCK_DELIVERABLES: Deliverable[] = [
   {
     id: 'DEL-2023-089',
     contractId: 'CT-2023-001',
-    contractor: 'Aseo Capital S.A. ESP',
-    type: 'Informe Mensual de Aprovechamiento',
+    contractor: 'Consorcio Infraestructura Norte',
+    type: 'Informe Mensual de Supervisión',
     month: 'Septiembre 2023',
     submissionDate: '2023-10-05',
     docStatus: 'valid',
@@ -53,8 +53,8 @@ const MOCK_DELIVERABLES: Deliverable[] = [
   {
     id: 'DEL-2023-090',
     contractId: 'CT-2023-002',
-    contractor: 'Recuperadora del Norte',
-    type: 'Certificación de Disposición Final',
+    contractor: 'Gestión Documental Integral S.A.S.',
+    type: 'Certificación de Cumplimiento Contractual',
     month: 'Septiembre 2023',
     submissionDate: '2023-10-06',
     docStatus: 'warning',
@@ -65,8 +65,8 @@ const MOCK_DELIVERABLES: Deliverable[] = [
   {
     id: 'DEL-2023-091',
     contractId: 'CT-2023-001',
-    contractor: 'Aseo Capital S.A. ESP',
-    type: 'Reporte de Novedades Operativas',
+    contractor: 'Consorcio Infraestructura Norte',
+    type: 'Reporte de Novedades y Subsanaciones',
     month: 'Agosto 2023',
     submissionDate: '2023-09-05',
     docStatus: 'valid',
@@ -105,16 +105,16 @@ export default function DirectorAuthorizationPage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
       <DirectorHeader
-        title="Autorizacion de Entregables"
-        subtitle="Supervision contractual y financiera"
+        title="Autorización Documental y Pagos"
+        subtitle="Seguimiento contractual, documental y financiero"
         backTo="/director/dashboard"
         rightContent={
           <>
             <div className="hidden lg:block mr-4">
               <select className="block w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm text-slate-700 focus:border-[#002B5B] focus:ring-[#002B5B]">
                 <option>Todos los Contratos</option>
-                <option>CT-2023-001 (Aseo Capital)</option>
-                <option>CT-2023-002 (Recuperadora Norte)</option>
+                <option>CT-2023-001 (Infraestructura Norte)</option>
+                <option>CT-2023-002 (Gestión Documental)</option>
               </select>
             </div>
             <div className="hidden md:flex flex-col items-end">
@@ -154,8 +154,8 @@ export default function DirectorAuthorizationPage() {
              <div className="hidden lg:block mr-4">
                 <select className="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#002B5B] focus:border-[#002B5B] block w-full p-2.5">
                    <option>Todos los Contratos</option>
-                   <option>CT-2023-001 (Aseo Capital)</option>
-                   <option>CT-2023-002 (Recuperadora Norte)</option>
+                   <option>CT-2023-001 (Infraestructura Norte)</option>
+                   <option>CT-2023-002 (Gestión Documental)</option>
                 </select>
              </div>
 
@@ -217,7 +217,7 @@ export default function DirectorAuthorizationPage() {
                          <th className="px-6 py-4 font-bold tracking-wider">Contrato / Operador</th>
                          <th className="px-6 py-4 font-bold tracking-wider">Entregable</th>
                          <th className="px-6 py-4 font-bold tracking-wider text-center">Estado Documental</th>
-                         <th className="px-6 py-4 font-bold tracking-wider text-center">Balance Masas</th>
+                         <th className="px-6 py-4 font-bold tracking-wider text-center">Consistencia Contractual</th>
                          <th className="px-6 py-4 font-bold tracking-wider text-center">Acción</th>
                        </tr>
                     </thead>
@@ -317,7 +317,7 @@ export default function DirectorAuthorizationPage() {
                          <div className="space-y-2">
                             <AttachmentItem name="Informe_Tecnico_Oct2023.pdf" size="2.4 MB" type="pdf" />
                             <AttachmentItem name="Certificacion_ARL_Parafiscales.pdf" size="1.1 MB" type="pdf" />
-                            <AttachmentItem name="Evidencia_Fotografica_Ruta.zip" size="15.8 MB" type="zip" />
+                            <AttachmentItem name="Anexos_Contractuales.zip" size="15.8 MB" type="zip" />
                          </div>
                       </div>
 
@@ -360,16 +360,16 @@ export default function DirectorAuthorizationPage() {
                             <StatusBadge status={selectedDeliverable.docStatus} type="doc" large />
                          </div>
                          <div className="p-4 rounded-lg bg-slate-50 border border-slate-100 flex flex-col items-center text-center">
-                            <span className="text-xs text-slate-500 uppercase font-bold mb-2">Balance de Masas</span>
+                            <span className="text-xs text-slate-500 uppercase font-bold mb-2">Consistencia Contractual</span>
                             <StatusBadge status={selectedDeliverable.balanceStatus} type="balance" large />
                          </div>
                       </div>
 
                       <div className="space-y-3">
-                         <ChecklistItem label="Cumplimiento Plan de Gestión Integral (PGIRS)" checked />
-                         <ChecklistItem label="Certificaciones de Disposición Final Validadas" checked />
+                         <ChecklistItem label="Objeto contractual y acta de supervisión verificados" checked />
+                         <ChecklistItem label="Certificaciones contractuales validadas" checked />
                          <ChecklistItem label="Pagos Seguridad Social al día" checked={selectedDeliverable.docStatus !== 'warning'} warning={selectedDeliverable.docStatus === 'warning'} />
-                         <ChecklistItem label="Consistencia en Reporte SUI" checked={selectedDeliverable.balanceStatus === 'consistent'} error={selectedDeliverable.balanceStatus !== 'consistent'} />
+                         <ChecklistItem label="Consistencia entre entregable, hito y valor" checked={selectedDeliverable.balanceStatus === 'consistent'} error={selectedDeliverable.balanceStatus !== 'consistent'} />
                       </div>
                    </div>
 
@@ -429,7 +429,7 @@ export default function DirectorAuthorizationPage() {
                          {selectedDeliverable.balanceStatus === 'inconsistent' && (
                             <p className="text-xs text-center text-red-600 font-medium bg-red-50 p-2 rounded">
                                <AlertTriangle className="h-3 w-3 inline mr-1" />
-                               No es posible autorizar: Inconsistencias en Balance de Masas
+                               No es posible autorizar: Inconsistencias contractuales o documentales
                             </p>
                          )}
                       </div>
@@ -496,8 +496,8 @@ function StatusBadge({ status, type, large }: { status: string, type: 'doc' | 'b
       if (status === 'warning') return <Badge color="amber" icon={<AlertTriangle className={large ? "h-5 w-5" : "h-3 w-3"} />} text="Revisión Pendiente" large={large} />;
       return <Badge color="red" icon={<XCircle className={large ? "h-5 w-5" : "h-3 w-3"} />} text="Documentos Vencidos" large={large} />;
    } else {
-      if (status === 'consistent') return <Badge color="green" icon={<Scale className={large ? "h-5 w-5" : "h-3 w-3"} />} text="Balance Consistente" large={large} />;
-      return <Badge color="red" icon={<AlertTriangle className={large ? "h-5 w-5" : "h-3 w-3"} />} text="Inconsistencias Detectadas" large={large} />;
+      if (status === 'consistent') return <Badge color="green" icon={<Scale className={large ? "h-5 w-5" : "h-3 w-3"} />} text="Consistencia Validada" large={large} />;
+      return <Badge color="red" icon={<AlertTriangle className={large ? "h-5 w-5" : "h-3 w-3"} />} text="Inconsistencias Documentales" large={large} />;
    }
 }
 

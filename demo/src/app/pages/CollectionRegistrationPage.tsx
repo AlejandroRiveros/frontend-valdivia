@@ -16,7 +16,7 @@ import {
   Navigation
 } from 'lucide-react';
 import { Link } from 'react-router';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
 
 export default function CollectionRegistrationPage() {
@@ -41,18 +41,18 @@ export default function CollectionRegistrationPage() {
     }
   };
 
-  // Auto-fill Macroroute based on Microroute
+  // Auto-fill responsible area based on document type
   useEffect(() => {
-    if (selectedMicroroute === 'MR-001') setMacroroute('MACRO-CENTRO (Zona A)');
-    else if (selectedMicroroute === 'MR-002') setMacroroute('MACRO-NORTE (Industrial)');
-    else if (selectedMicroroute === 'MR-003') setMacroroute('MACRO-OCCIDENTE (Residencial)');
+    if (selectedMicroroute === 'DOC-001') setMacroroute('Supervisión Contractual');
+    else if (selectedMicroroute === 'DOC-002') setMacroroute('Financiera / Tesorería');
+    else if (selectedMicroroute === 'DOC-003') setMacroroute('Jurídica Contractual');
     else setMacroroute('');
   }, [selectedMicroroute]);
 
   const handleUpload = () => {
     // Simulate upload
     setTimeout(() => {
-      setUploadedFile('evidencia_ruta_001.jpg');
+      setUploadedFile('documento_contractual_001.pdf');
     }, 500);
   };
 
@@ -66,8 +66,8 @@ export default function CollectionRegistrationPage() {
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div>
-              <h1 className="text-lg font-bold text-[#002B5B] leading-none">Registrar Recolección</h1>
-              <p className="text-xs text-slate-500 mt-1">Gestión de Aprovechamiento (Dec. 596/2016)</p>
+              <h1 className="text-lg font-bold text-[#002B5B] leading-none">Radicar Documento Contractual</h1>
+              <p className="text-xs text-slate-500 mt-1">Gestión documental de contratos gubernamentales</p>
             </div>
           </div>
           
@@ -95,7 +95,7 @@ export default function CollectionRegistrationPage() {
             <div>
               <h3 className="text-sm font-bold text-red-800">Contrato Suspendido o Inactivo</h3>
               <p className="text-sm text-red-700 mt-1">
-                No es posible registrar nuevas operaciones hasta normalizar su situación contractual. Contacte a supervisión.
+                No es posible radicar nuevos documentos hasta normalizar su situación contractual. Contacte a supervisión.
               </p>
             </div>
           </div>
@@ -121,7 +121,7 @@ export default function CollectionRegistrationPage() {
           
           <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
              <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
-               <Truck className="h-4 w-4" /> Datos de la Ruta
+               <FileText className="h-4 w-4" /> Datos del Radicado
              </h2>
              <span className="text-xs text-slate-500 font-mono">ID: REG-{new Date().getTime().toString().slice(-6)}</span>
           </div>
@@ -130,7 +130,7 @@ export default function CollectionRegistrationPage() {
             
             {/* Fecha y Hora */}
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-700 uppercase">Fecha de Recolección</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase">Fecha de Radicación</label>
               <div className="relative">
                 <input 
                   type="date" 
@@ -141,55 +141,55 @@ export default function CollectionRegistrationPage() {
               </div>
             </div>
 
-            {/* Microruta Selector */}
+            {/* Tipo de documento */}
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-700 uppercase">Microruta Asignada</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase">Tipo de Documento</label>
               <div className="relative">
                 <select 
                   className="w-full pl-10 pr-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#002B5B] focus:border-transparent appearance-none bg-white"
                   value={selectedMicroroute}
                   onChange={(e) => setSelectedMicroroute(e.target.value)}
                 >
-                  <option value="">Seleccione una microruta...</option>
-                  <option value="MR-001">MR-001: Centro Histórico - Sector A</option>
-                  <option value="MR-002">MR-002: Zona Industrial Norte</option>
-                  <option value="MR-003">MR-003: Residencial Los Álamos</option>
+                  <option value="">Seleccione tipo de documento...</option>
+                  <option value="DOC-001">DOC-001: Acta de inicio / suspensión</option>
+                  <option value="DOC-002">DOC-002: Cuenta de cobro / pago</option>
+                  <option value="DOC-003">DOC-003: Otro sí / modificación</option>
                 </select>
                 <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
               </div>
             </div>
 
-            {/* Macroruta (Auto) */}
+            {/* Área responsable (Auto) */}
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-500 uppercase">Macroruta (Automático)</label>
+              <label className="block text-xs font-bold text-slate-500 uppercase">Área Responsable (Automático)</label>
               <div className={`w-full px-3 py-2 border border-slate-200 rounded-md text-sm ${macroroute ? 'bg-blue-50 text-[#002B5B] font-medium' : 'bg-slate-100 text-slate-500'}`}>
-                {macroroute || 'Seleccione microruta para visualizar...'}
+                {macroroute || 'Seleccione tipo documental para asignar área...'}
               </div>
             </div>
 
             {/* Ubicación GPS */}
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-700 uppercase">Ubicación (GPS)</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase">Número de Radicado / SECOP</label>
               <div className="flex gap-2">
                  <input 
                   type="text" 
                   readOnly
-                  placeholder="Coordenadas no detectadas"
+                  placeholder="Radicado no asignado"
                   className="flex-1 px-3 py-2 border border-slate-300 rounded-md text-sm bg-slate-50 text-slate-500"
                 />
                 <Button type="button" size="sm" className="shrink-0 w-auto px-3 bg-[#002B5B] text-white border-transparent hover:bg-[#001F44]">
-                  <Navigation className="h-4 w-4 mr-1" /> Detectar
+                  <Navigation className="h-4 w-4 mr-1" /> Generar
                 </Button>
               </div>
             </div>
 
              <div className="md:col-span-2 border-t border-slate-100 my-2"></div>
 
-            {/* Tipo de Material */}
+            {/* Clasificación documental */}
             <div className="space-y-2 md:col-span-2">
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-3">Tipo de Material Principal</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase mb-3">Clasificación Documental</label>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-                {['Plástico', 'Papel', 'Metal', 'Vidrio', 'Orgánico'].map((type) => (
+                {['Contrato', 'Acta', 'Informe', 'Póliza', 'Pago'].map((type) => (
                   <label 
                     key={type} 
                     className={`flex flex-col items-center justify-center p-3 border rounded-md cursor-pointer transition-all ${
@@ -200,7 +200,7 @@ export default function CollectionRegistrationPage() {
                   >
                     <input 
                       type="radio" 
-                      name="material" 
+                      name="documentType" 
                       className="sr-only" 
                       checked={materialType === type}
                       onChange={() => setMaterialType(type)}
@@ -211,9 +211,9 @@ export default function CollectionRegistrationPage() {
               </div>
             </div>
 
-            {/* Peso Estimado */}
+            {/* Folios estimados */}
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-700 uppercase">Peso Estimado (Kg)</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase">Número de Folios</label>
               <div className="relative">
                 <input 
                   type="number" 
@@ -224,23 +224,23 @@ export default function CollectionRegistrationPage() {
                     showWeightWarning ? 'border-amber-300 bg-amber-50' : 'border-slate-300'
                   }`}
                 />
-                <Scale className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                <span className="absolute right-3 top-2.5 text-xs font-bold text-slate-400">KG</span>
+                <FileText className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                <span className="absolute right-3 top-2.5 text-xs font-bold text-slate-400">FOL</span>
               </div>
               {showWeightWarning && (
                 <p className="text-xs text-amber-700 font-medium flex items-center gap-1">
                   <AlertTriangle className="h-3 w-3" />
-                  El peso ingresado supera el promedio histórico (500kg). Se requerirá validación adicional.
+                  El expediente supera 500 folios. Se requerirá validación documental adicional.
                 </p>
               )}
             </div>
 
             {/* Observaciones */}
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-700 uppercase">Observaciones Operativas</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase">Observaciones Documentales</label>
               <textarea 
                 className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#002B5B] focus:border-transparent h-[100px] resize-none"
-                placeholder="Detalles sobre el estado del material, novedades en la ruta, etc..."
+                placeholder="Detalles del radicado, anexos faltantes, observaciones de revisión, etc..."
               ></textarea>
             </div>
 
@@ -248,7 +248,7 @@ export default function CollectionRegistrationPage() {
             
             {/* Adjuntar Evidencia */}
             <div className="md:col-span-2 space-y-3">
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-2">Evidencia Fotográfica y Soportes</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase mb-2">Adjuntos y Soportes</label>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Upload Zone 1: Photo */}
@@ -259,8 +259,8 @@ export default function CollectionRegistrationPage() {
                   <div className="p-3 bg-slate-100 rounded-full mb-3 group-hover:bg-blue-100 transition-colors">
                     <Camera className="h-6 w-6 text-slate-400 group-hover:text-[#002B5B]" />
                   </div>
-                  <p className="text-sm font-medium text-slate-900">Tomar o subir foto</p>
-                  <p className="text-xs text-slate-500 mt-1">JPG, PNG (Max. 5MB)</p>
+                  <p className="text-sm font-medium text-slate-900">Adjuntar soporte principal</p>
+                  <p className="text-xs text-slate-500 mt-1">PDF, DOCX, JPG (Max. 10MB)</p>
                 </div>
 
                 {/* Upload Zone 2: Document */}
@@ -268,7 +268,7 @@ export default function CollectionRegistrationPage() {
                    <div className="p-3 bg-slate-100 rounded-full mb-3 group-hover:bg-blue-100 transition-colors">
                     <UploadCloud className="h-6 w-6 text-slate-400 group-hover:text-[#002B5B]" />
                   </div>
-                  <p className="text-sm font-medium text-slate-900">Adjuntar Planilla</p>
+                  <p className="text-sm font-medium text-slate-900">Adjuntar anexos</p>
                   <p className="text-xs text-slate-500 mt-1">PDF, Documento escaneado</p>
                 </div>
               </div>
@@ -309,13 +309,13 @@ export default function CollectionRegistrationPage() {
               disabled={contractStatus === 'inactive'}
             >
               <CheckCircle className="h-4 w-4 mr-2" />
-              Registrar Recolección
+              Radicar Documento Contractual
             </Button>
           </div>
         </form>
 
         <div className="text-center text-xs text-slate-400 mt-8 pb-8">
-          Plataforma VALDIVIA • Gestión Institucional de Residuos • Versión 1.0.4
+          Plataforma VALDIVIA • Gestión Documental Contractual • Versión 1.0.4
         </div>
 
       </main>
