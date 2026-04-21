@@ -18,6 +18,7 @@ import { Link, useNavigate } from 'react-router';
 import { Button } from '../components/ui/Button';
 import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
 import DirectorHeader from '../components/director/DirectorHeader';
+import { apiFetch } from '../../lib/api';
 
 // --- Types ---
 
@@ -43,14 +44,6 @@ interface ProcessFormData {
   accessLevel: 'read' | 'write' | 'admin';
 }
 
-// --- Mock Data ---
-
-const MOCK_ANALYSTS: TeamMember[] = [
-  { id: 'AN-01', name: 'Ana María Gonzalez', role: 'Analista Senior', activeProcesses: 2, avatar: 'AG' },
-  { id: 'AN-02', name: 'Carlos Rodriguez', role: 'Analista Jurídico', activeProcesses: 5, avatar: 'CR' },
-  { id: 'AN-03', name: 'Luisa Fernanda Perez', role: 'Analista Financiero', activeProcesses: 1, avatar: 'LP' },
-];
-
 const MOCK_OPERATORS = [
   { id: 'OP-01', name: 'Unión Temporal Aseo Norte' },
   { id: 'OP-02', name: 'Recuperadora del Valle SAS' },
@@ -64,6 +57,9 @@ export default function NewTenderProcessPage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [generatedId, setGeneratedId] = useState('');
+  const [analysts, setAnalysts] = useState<TeamMember[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   
   const [formData, setFormData] = useState<ProcessFormData>({
     name: '',
@@ -81,11 +77,20 @@ export default function NewTenderProcessPage() {
 
   const [errors, setErrors] = useState<Partial<Record<keyof ProcessFormData, string>>>({});
 
-  // Auto-generate ID on mount
   useEffect(() => {
     const year = new Date().getFullYear();
     const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
     setGeneratedId(`LP-${year}-${random}`);
+
+    apiFetch('/users')
+      .then(r => r.json())
+      .then((users: Array<{ id: string; name: string; role: string; activeProcesses: number; avatar: string }>) => {
+        const mapped = users
+          .filter(u => u.role === 'ANALYST')
+          .map(u => ({ id: u.id, name: u.name, role: 'Analista', activeProcesses: u.activeProcesses ?? 0, avatar: u.avatar ?? u.name.substring(0, 2).toUpperCase() }));
+        setAnalysts(mapped);
+      })
+      .catch(() => setAnalysts([]));
   }, []);
 
   // --- Validations ---
@@ -129,13 +134,42 @@ export default function NewTenderProcessPage() {
     }
   };
 
-  const confirmCreation = () => {
-    // Here you would normally perform the API call
-    alert(`Proceso ${generatedId} creado exitosamente.`);
-    navigate('/director/dashboard');
+  const confirmCreation = async () => {
+    setIsSubmitting(true);
+    setSubmitError('');
+    try {
+      const res = await apiFetch('/tender-processes', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: formData.name,
+          entity: formData.entity,
+          modality: formData.modality,
+          budget: formData.budget,
+          description: formData.description,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+          analystId: formData.analystId,
+          operatorId: formData.operatorId || null,
+          supervisorRole: formData.supervisorRole,
+          accessLevel: formData.accessLevel,
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setSubmitError(data.error || 'Error al crear el proceso');
+        return;
+      }
+      setGeneratedId(data.process.generatedId);
+      setShowConfirmModal(false);
+      navigate('/director/dashboard');
+    } catch {
+      setSubmitError('Error de conexión con el servidor');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const selectedAnalyst = MOCK_ANALYSTS.find(a => a.id === formData.analystId);
+  const selectedAnalyst = analysts.find(a => a.id === formData.analystId);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-20">
@@ -356,7 +390,7 @@ export default function NewTenderProcessPage() {
                    <div>
                       <label className="block text-sm font-bold text-slate-700 mb-3">Analista Responsable (Líder del Proceso) <span className="text-red-500">*</span></label>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                         {MOCK_ANALYSTS.map((analyst) => (
+                         {analysts.map((analyst) => (
                             <div 
                               key={analyst.id}
                               onClick={() => setFormData({...formData, analystId: analyst.id})}
@@ -491,12 +525,23 @@ export default function NewTenderProcessPage() {
                     </span>
                  </p>
                  
+                 {submitError && (
+                   <div role="alert" className="p-3 bg-red-50 border border-red-200 rounded text-xs text-red-600 text-center">
+                     {submitError}
+                   </div>
+                 )}
                  <div className="flex flex-col gap-3">
-                    <Button 
+                    <Button
                       className="w-full bg-[#002B5B] hover:bg-[#001F44] text-white h-12 text-base shadow-lg"
                       onClick={confirmCreation}
+                      disabled={isSubmitting}
                     >
-                       Confirmar y Notificar
+                       {isSubmitting ? (
+                         <span className="flex items-center gap-2">
+                           <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                           Guardando...
+                         </span>
+                       ) : 'Confirmar y Notificar'}
                     </Button>
                     <Button 
                       variant="ghost" 

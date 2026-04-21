@@ -16,7 +16,13 @@ export default function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
     return <Navigate to="/" replace />;
   }
 
-  const user = JSON.parse(userStr);
+  let user: { role: AllowedRoles } | null = null;
+  try {
+    user = JSON.parse(userStr);
+  } catch {
+    return <Navigate to="/" replace />;
+  }
+  if (!user) return <Navigate to="/" replace />;
   const userRole = user.role as AllowedRoles;
 
   // Un Admin tiene super-permisos, por lo tanto siempre tiene paso

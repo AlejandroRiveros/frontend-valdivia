@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
@@ -18,6 +18,7 @@ export default function LoginPage() {
   const [emailTouched, setEmailTouched] = useState(false);
 
   const isEmailValid = /\S+@\S+\.\S+/.test(email);
+  const prefersReducedMotion = useReducedMotion();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,9 +66,9 @@ export default function LoginPage() {
       <div className="fixed inset-0 pointer-events-none opacity-30 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-200 via-transparent to-transparent" />
 
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+        transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: 'easeOut' }}
         className="w-full max-w-[420px] bg-white rounded-lg shadow-lg border border-slate-100 overflow-hidden relative z-10"
       >
         <div className="p-8 md:p-10 space-y-8">
@@ -82,7 +83,7 @@ export default function LoginPage() {
 
             <div className="text-center space-y-2">
               <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">
-                Iniciar sesion
+                Iniciar sesión
               </h1>
               <p className="text-sm text-slate-500">
                 Acceso a la plataforma de gestion contractual
@@ -92,7 +93,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded text-xs text-red-600 font-medium text-center">
+              <div role="alert" aria-live="assertive" className="p-3 bg-red-50 border border-red-200 rounded text-xs text-red-600 font-medium text-center">
                 {error}
               </div>
             )}
@@ -100,13 +101,14 @@ export default function LoginPage() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium text-slate-700">
-                  Correo electronico
+                  Correo electrónico
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                   <Input
                     id="email"
                     type="email"
+                    autoComplete="email"
                     placeholder="nombre@institucion.gov.co"
                     className={`pl-10 bg-slate-50/50 focus:border-[#002B5B] focus:ring-[#002B5B] ${
                       emailTouched && !isEmailValid ? 'border-red-300 bg-red-50' : 'border-slate-200'
@@ -131,6 +133,7 @@ export default function LoginPage() {
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
                     placeholder="********"
                     className="pl-10 pr-10 bg-slate-50/50 border-slate-200 focus:border-[#002B5B] focus:ring-[#002B5B]"
                     value={password}
@@ -139,8 +142,9 @@ export default function LoginPage() {
                   />
                   <button
                     type="button"
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 transition-colors"
+                    className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />

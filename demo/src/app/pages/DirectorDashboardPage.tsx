@@ -171,6 +171,11 @@ export default function DirectorDashboardPage() {
                   </Link>
                 </div>
                 <div className="h-[250px] w-full">
+                  {monthlyTrendData.length === 0 ? (
+                    <div className="flex h-full items-center justify-center text-sm text-slate-400">
+                      Sin datos disponibles aún
+                    </div>
+                  ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={monthlyTrendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                       <defs>
@@ -192,6 +197,7 @@ export default function DirectorDashboardPage() {
                       <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
                     </AreaChart>
                   </ResponsiveContainer>
+                  )}
                 </div>
               </div>
 
@@ -210,9 +216,15 @@ export default function DirectorDashboardPage() {
                         <Legend verticalAlign="bottom" height={36} />
                       </RechartsPieChart>
                     </ResponsiveContainer>
-                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                      <span className="pb-8 text-2xl font-bold text-slate-800">92%</span>
-                    </div>
+                    {complianceData.every(d => d.name === 'Sin datos') ? (
+                      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                        <span className="pb-8 text-sm text-slate-400">Sin datos</span>
+                      </div>
+                    ) : (
+                      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                        <span className="pb-8 text-2xl font-bold text-slate-800">92%</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -243,12 +255,27 @@ export default function DirectorDashboardPage() {
                   <ShieldAlert className="h-4 w-4 text-slate-500" />
                   Monitor de riesgos
                 </h3>
-                <div className="flex gap-2 text-xs font-semibold">
-                  <span className="rounded-full bg-red-100 px-2 py-1 text-red-700">3 Criticos</span>
-                  <span className="rounded-full bg-amber-100 px-2 py-1 text-amber-700">2 Alertas</span>
-                </div>
+                {riskData.length > 0 && (
+                  <div className="flex gap-2 text-xs font-semibold">
+                    {riskData.filter(r => r.type === 'critical').length > 0 && (
+                      <span className="rounded-full bg-red-100 px-2 py-1 text-red-700">
+                        {riskData.filter(r => r.type === 'critical').length} Críticos
+                      </span>
+                    )}
+                    {riskData.filter(r => r.type !== 'critical').length > 0 && (
+                      <span className="rounded-full bg-amber-100 px-2 py-1 text-amber-700">
+                        {riskData.filter(r => r.type !== 'critical').length} Alertas
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
               <div className="max-h-[340px] flex-1 space-y-3 overflow-y-auto p-4">
+                {riskData.length === 0 && (
+                  <div className="flex h-full items-center justify-center py-12 text-center text-sm text-slate-400">
+                    Sin riesgos activos en este momento.
+                  </div>
+                )}
                 {riskData.map((risk) => (
                   <button
                     key={risk.id}
@@ -321,8 +348,8 @@ export default function DirectorDashboardPage() {
               <div className="flex items-center justify-between border-b border-slate-100 p-6">
                 <h3 className="font-bold text-slate-900">Estado de contratos</h3>
                 <div className="flex gap-2">
-                  <button className="text-slate-400 transition-colors hover:text-[#002B5B]"><Search className="h-4 w-4" /></button>
-                  <button className="text-slate-400 transition-colors hover:text-[#002B5B]"><Settings className="h-4 w-4" /></button>
+                  <button aria-label="Buscar contratos" className="text-slate-400 transition-colors hover:text-[#002B5B] cursor-pointer"><Search className="h-4 w-4" /></button>
+                  <button aria-label="Configurar tabla" className="text-slate-400 transition-colors hover:text-[#002B5B] cursor-pointer"><Settings className="h-4 w-4" /></button>
                 </div>
               </div>
               <div className="overflow-x-auto">
@@ -337,11 +364,22 @@ export default function DirectorDashboardPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
+                    {contractData.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-10 text-center text-sm text-slate-400">
+                          Sin contratos registrados aún
+                        </td>
+                      </tr>
+                    )}
                     {contractData.map((contract) => (
                       <tr
                         key={contract.id}
                         onClick={() => navigate(`/director/contract-file?contractId=${contract.id}`)}
-                        className="cursor-pointer transition-colors hover:bg-slate-50/50"
+                        onKeyDown={(e) => e.key === 'Enter' && navigate(`/director/contract-file?contractId=${contract.id}`)}
+                        tabIndex={0}
+                        role="link"
+                        aria-label={`Ver expediente del contrato ${contract.id}`}
+                        className="cursor-pointer transition-colors hover:bg-slate-50/50 focus:outline-none focus:bg-slate-100"
                       >
                         <td className="px-6 py-4">
                           <div className="font-medium text-slate-900">{contract.id}</div>

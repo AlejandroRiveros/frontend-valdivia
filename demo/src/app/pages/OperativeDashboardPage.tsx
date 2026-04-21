@@ -35,6 +35,8 @@ export default function OperativeDashboardPage() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    localStorage.removeItem('valdivia_token');
+    localStorage.removeItem('valdivia_user');
     navigate('/');
   };
 
@@ -366,7 +368,8 @@ export default function OperativeDashboardPage() {
 // Sub-components (SaaS Style)
 // ----------------------------------------------------------------------
 
-function StatusCard({ title, value, trend, status, icon, highlight }: any) {
+interface StatusCardProps { title: string; value: string; trend: string; status: 'success' | 'warning' | 'danger' | 'neutral'; icon: React.ReactNode; highlight?: boolean; }
+function StatusCard({ title, value, trend, status, icon, highlight }: StatusCardProps) {
   const statusColors = {
     success: 'bg-emerald-500',
     warning: 'bg-amber-500',
@@ -398,7 +401,8 @@ function StatusCard({ title, value, trend, status, icon, highlight }: any) {
   );
 }
 
-function MiniStatusCard({ label, value, icon, color }: any) {
+interface MiniStatusCardProps { label: string; value: string; icon: React.ReactNode; color: 'amber' | 'blue' | 'slate'; }
+function MiniStatusCard({ label, value, icon, color }: MiniStatusCardProps) {
     const colors = {
         amber: 'text-amber-600 bg-amber-50',
         blue: 'text-blue-600 bg-blue-50',
@@ -418,7 +422,8 @@ function MiniStatusCard({ label, value, icon, color }: any) {
     )
 }
 
-function ActionButton({ icon, label, desc, variant, href }: any) {
+interface ActionButtonProps { icon: React.ReactElement; label: string; desc: string; variant: 'active' | 'normal' | 'blocked' | 'warning' | 'critical'; href?: string; }
+function ActionButton({ icon, label, desc, variant, href }: ActionButtonProps) {
   const styles = {
     active: 'bg-blue-50/50 border-blue-200 text-[#002B5B] shadow-sm ring-1 ring-blue-100 hover:shadow-md',
     normal: 'bg-white border-slate-100 text-slate-600 shadow-sm hover:border-slate-300 hover:shadow hover:text-[#002B5B]',
@@ -452,7 +457,8 @@ function ActionButton({ icon, label, desc, variant, href }: any) {
   return <button className="w-full" disabled={variant === 'blocked'}>{content}</button>;
 }
 
-function SecondaryActionButton({ icon, label, highlight }: any) {
+interface SecondaryActionButtonProps { icon: React.ReactElement; label: string; highlight?: boolean; }
+function SecondaryActionButton({ icon, label, highlight }: SecondaryActionButtonProps) {
     return (
         <button className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all text-center h-20 w-full hover:shadow-sm ${
             highlight ? 'bg-red-50/50 border-red-100 text-red-700 hover:bg-red-50' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-300 hover:text-slate-700'
@@ -465,7 +471,8 @@ function SecondaryActionButton({ icon, label, highlight }: any) {
     )
 }
 
-function FlowStep({ step, label, status, icon }: any) {
+interface FlowStepProps { step: string; label: string; status: 'completed' | 'active' | 'pending' | 'locked'; icon: React.ReactElement; }
+function FlowStep({ step, label, status, icon }: FlowStepProps) {
   const styles = {
     completed: { circle: 'border-emerald-500 bg-emerald-500 text-white', text: 'text-emerald-700' },
     active: { circle: 'border-[#002B5B] bg-white text-[#002B5B] shadow-[0_0_0_4px_rgba(0,43,91,0.1)]', text: 'text-[#002B5B]' },
@@ -488,7 +495,8 @@ function FlowStep({ step, label, status, icon }: any) {
   );
 }
 
-function TableRow({ date, type, contract, material, qty, status, statusType }: any) {
+interface TableRowProps { date: string; type: string; contract: string; material: string; qty: string; status: string; statusType: 'success' | 'error' | 'warning'; }
+function TableRow({ date, type, contract, material, qty, status, statusType }: TableRowProps) {
   const statusStyles = {
       success: 'bg-emerald-100 text-emerald-800 border-emerald-200',
       error: 'bg-red-50 text-red-700 border-red-100',
@@ -516,7 +524,8 @@ function TableRow({ date, type, contract, material, qty, status, statusType }: a
   );
 }
 
-function AlertItem({ title, desc, severity }: any) {
+interface AlertItemProps { title: string; desc: string; severity: 'critical' | 'warning'; }
+function AlertItem({ title, desc, severity }: AlertItemProps) {
   const isCritical = severity === 'critical';
   return (
     <div className={`p-3 rounded-lg border-l-4 transition-all hover:bg-white hover:shadow-sm ${isCritical ? 'bg-red-50/40 border-l-red-500 border-y border-r border-red-50/50' : 'bg-amber-50/40 border-l-amber-400 border-y border-r border-amber-50/50'}`}>
