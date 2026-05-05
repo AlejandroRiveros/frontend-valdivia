@@ -6,7 +6,7 @@ import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router';
 import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api';
 
 export default function LoginPage() {
   const navigate = useNavigate();
