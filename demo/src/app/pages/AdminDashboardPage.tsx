@@ -219,6 +219,7 @@ export default function AdminDashboardPage() {
                   >
                     <option value="ANALYST">Analista (Operativo)</option>
                     <option value="OPERATOR">Operador</option>
+                    <option value="SUPERVISOR">Supervisor</option>
                     <option value="JURIDIC">Jurídico</option>
                     <option value="DIRECTOR">Director Estratégico</option>
                     <option value="ADMIN">Administrador</option>
@@ -287,6 +288,7 @@ export default function AdminDashboardPage() {
                         ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' :
                           user.role === 'DIRECTOR' ? 'bg-blue-100 text-blue-700' :
                           user.role === 'JURIDIC' ? 'bg-amber-100 text-amber-700' :
+                          user.role === 'SUPERVISOR' ? 'bg-indigo-100 text-indigo-700' :
                           'bg-slate-100 text-slate-700'}`}
                       >
                         {user.role}

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { 
   Bell, 
   LogOut, 
@@ -33,6 +33,12 @@ import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.
 export default function OperativeDashboardPage() {
   const navigate = useNavigate();
 
+  const userStr = localStorage.getItem('valdivia_user');
+  let user: { name?: string; role?: string } | null = null;
+  try { user = userStr ? JSON.parse(userStr) : null; } catch { /* corrupted */ }
+  const userName = user?.name || 'Analista';
+  const userInitials = userName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+
   const handleLogout = () => {
     localStorage.removeItem('valdivia_token');
     localStorage.removeItem('valdivia_user');
@@ -48,7 +54,7 @@ export default function OperativeDashboardPage() {
             <img 
               src={valdiviaLogo} 
               alt="Logo VALDIVIA" 
-              className="h-20 w-auto object-contain"
+              className="h-16 w-auto object-contain"
             />
             <div className="h-5 w-px bg-slate-200 hidden md:block"></div>
             <div className="hidden md:block">
@@ -69,7 +75,7 @@ export default function OperativeDashboardPage() {
             </div>
 
             <div className="flex items-center gap-4">
-              <button className="relative text-slate-400 hover:text-[#002B5B] transition-colors p-1.5 hover:bg-slate-50 rounded-md">
+              <button aria-label="Notificaciones" className="relative text-slate-400 hover:text-[#002B5B] transition-colors p-1.5 hover:bg-slate-50 rounded-md">
                 <Bell className="h-4 w-4" />
                 <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 bg-red-500 rounded-full border border-white"></span>
               </button>
@@ -78,17 +84,17 @@ export default function OperativeDashboardPage() {
               
               <div className="flex items-center gap-3 text-sm">
                 <div className="text-right hidden sm:block">
-                  <p className="font-bold text-slate-800 text-xs leading-none">Carlos Rodríguez</p>
-                  <p className="text-slate-400 text-[10px] mt-1 leading-none">ID: OP-8821</p>
+                  <p className="font-bold text-slate-800 text-xs leading-none">{userName}</p>
+                  <p className="text-slate-400 text-[10px] mt-1 leading-none">Panel Operativo</p>
                 </div>
                 <div className="h-8 w-8 rounded-full bg-[#002B5B] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white shadow-sm">
-                  CR
+                  {userInitials}
                 </div>
               </div>
 
-              <button 
-                className="text-slate-300 hover:text-red-600 transition-colors ml-1" 
-                title="Cerrar sesión"
+              <button
+                aria-label="Cerrar sesión"
+                className="text-slate-300 hover:text-red-600 transition-colors ml-1"
                 onClick={handleLogout}
               >
                 <LogOut className="h-4 w-4" />
@@ -192,8 +198,9 @@ export default function OperativeDashboardPage() {
                   <ActionButton
                     icon={<Briefcase />}
                     label="Expediente Digital"
-                    desc="Archivo contractual"
+                    desc="Mis procesos"
                     variant="normal"
+                    href="/operative/processes"
                   />
                 </div>
               </section>

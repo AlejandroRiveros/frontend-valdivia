@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
   Calendar, 
@@ -17,7 +17,6 @@ import {
 import { Link, useNavigate } from 'react-router';
 import { Button } from '../components/ui/button';
 import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
-import DirectorHeader from '../components/director/DirectorHeader';
 import { apiFetch } from '../../lib/api';
 
 // --- Types ---
@@ -54,6 +53,18 @@ const INTERNAL_BUDGET_LIMIT = 5000000000; // 5.000 M
 
 export default function NewTenderProcessPage() {
   const navigate = useNavigate();
+
+  const userStr = localStorage.getItem('valdivia_user');
+  let userName = 'Director';
+  let userInitials = 'DE';
+  try {
+    const u = userStr ? JSON.parse(userStr) : null;
+    if (u?.name) {
+      userName = u.name;
+      userInitials = u.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('').toUpperCase();
+    }
+  } catch {}
+
   const [step, setStep] = useState<1 | 2>(1);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [generatedId, setGeneratedId] = useState('');
@@ -173,56 +184,47 @@ export default function NewTenderProcessPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-20">
-      <DirectorHeader
-        title="Iniciar Nuevo Proceso"
-        subtitle="Gestion estrategica del director"
-        backTo="/director/dashboard"
-        maxWidthClassName="max-w-5xl"
-        rightContent={
-          <div className="flex items-center gap-3">
-            <div className="hidden text-right sm:block">
-              <p className="text-xs font-bold uppercase text-slate-400">Paso {step} de 2</p>
-              <p className="text-sm font-bold text-[#002B5B]">{step === 1 ? 'Datos Generales' : 'Asignacion de Equipo'}</p>
-            </div>
-            <div className="flex gap-1">
-              <div className={`h-2 w-8 rounded-full transition-colors ${step >= 1 ? 'bg-[#002B5B]' : 'bg-slate-200'}`} />
-              <div className={`h-2 w-8 rounded-full transition-colors ${step >= 2 ? 'bg-[#002B5B]' : 'bg-slate-200'}`} />
-            </div>
-          </div>
-        }
-      />
-      
-      {/* 1. Header */}
-      {false && <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-30">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-30">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to="/director/dashboard" className="text-slate-400 hover:text-[#002B5B] transition-colors p-2 -ml-2 rounded-full hover:bg-slate-50">
-              <ArrowLeft className="h-6 w-6" />
+            <Link
+              to="/director/dashboard"
+              className="text-slate-500 hover:text-[#002B5B] transition-colors p-2 -ml-2 rounded-full hover:bg-slate-50"
+            >
+              <ArrowLeft className="h-5 w-5" />
             </Link>
-            <img 
-              src={valdiviaLogo} 
-              alt="Logo VALDIVIA" 
-              className="h-12 w-auto object-contain"
-            />
-            <div className="h-8 w-px bg-slate-200 mx-2"></div>
-            <div>
-              <h1 className="text-lg font-bold text-[#002B5B] leading-none">Iniciar Nuevo Proceso</h1>
-              <p className="text-xs text-slate-500 mt-1 uppercase tracking-wide">Gestión Estratégica del Director</p>
+            <img src={valdiviaLogo} alt="Logo VALDIVIA" className="h-16 w-auto object-contain" />
+            <div className="h-5 w-px bg-slate-200 hidden md:block" />
+            <div className="hidden md:block">
+              <h1 className="text-sm font-bold text-[#002B5B] leading-none">Nuevo Proceso de Contratación</h1>
+              <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">Panel Directivo</p>
             </div>
           </div>
-          
-          <div className="flex items-center gap-3">
-             <div className="text-right hidden sm:block">
-                <p className="text-xs text-slate-400 font-bold uppercase">Paso {step} de 2</p>
-                <p className="text-sm font-bold text-[#002B5B]">{step === 1 ? 'Datos Generales' : 'Asignación de Equipo'}</p>
-             </div>
-             <div className="flex gap-1">
-                <div className={`h-2 w-8 rounded-full transition-colors ${step >= 1 ? 'bg-[#002B5B]' : 'bg-slate-200'}`}></div>
-                <div className={`h-2 w-8 rounded-full transition-colors ${step >= 2 ? 'bg-[#002B5B]' : 'bg-slate-200'}`}></div>
-             </div>
+
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="text-right hidden sm:block">
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide">Paso {step} de 2</p>
+                <p className="text-xs font-bold text-[#002B5B]">{step === 1 ? 'Datos Generales' : 'Asignación de Equipo'}</p>
+              </div>
+              <div className="flex gap-1">
+                <div className={`h-1.5 w-8 rounded-full transition-colors ${step >= 1 ? 'bg-[#002B5B]' : 'bg-slate-200'}`} />
+                <div className={`h-1.5 w-8 rounded-full transition-colors ${step >= 2 ? 'bg-[#002B5B]' : 'bg-slate-200'}`} />
+              </div>
+            </div>
+            <div className="h-5 w-px bg-slate-200 hidden sm:block" />
+            <div className="flex items-center gap-3">
+              <div className="text-right hidden sm:block">
+                <p className="font-bold text-slate-800 text-xs leading-none">{userName}</p>
+                <p className="text-slate-400 text-[10px] mt-1 leading-none">Panel Directivo</p>
+              </div>
+              <div className="h-8 w-8 rounded-full bg-[#002B5B] flex items-center justify-center text-white text-xs font-bold ring-2 ring-white shadow-sm">
+                {userInitials}
+              </div>
+            </div>
           </div>
         </div>
-      </header>}
+      </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         

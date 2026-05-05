@@ -1,4 +1,4 @@
-import { Bell, ChevronLeft, LogOut } from 'lucide-react';
+﻿import { Bell, ChevronLeft, LogOut } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import valdiviaLogo from '../../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
@@ -32,8 +32,9 @@ export default function DirectorHeader({
 
   // Obtener datos del usuario logueado
   const userStr = localStorage.getItem('valdivia_user');
-  const user = userStr ? JSON.parse(userStr) : null;
-  const userName = user?.name || 'Cargando...';
+  let user: { name?: string; role?: string; avatar?: string } | null = null;
+  try { user = userStr ? JSON.parse(userStr) : null; } catch { /* corrupted storage */ }
+  const userName = user?.name || 'Usuario';
   const userRole = user?.role === 'ADMIN' ? 'Administrador' : user?.role === 'DIRECTOR' ? 'Director' : 'Analista';
   const userAvatar = user?.avatar || 'US';
 
@@ -54,7 +55,7 @@ export default function DirectorHeader({
           ) : null}
 
           <div className="flex items-center gap-3">
-            <img src={valdiviaLogo} alt="Logo VALDIVIA" className="h-12 w-auto object-contain md:h-16" />
+            <img src={valdiviaLogo} alt="Logo VALDIVIA" className="h-16 w-auto object-contain" />
             <div className="flex flex-col">
               <span className="text-lg font-bold leading-none tracking-tight text-[#002B5B]">VALDIVIA</span>
               <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
@@ -78,7 +79,10 @@ export default function DirectorHeader({
                   <Link
                     key={item.label}
                     to={item.to}
-                    className={active ? 'font-semibold text-[#002B5B]' : 'transition-colors hover:text-[#002B5B]'}
+                    aria-current={active ? 'page' : undefined}
+                    className={active
+                      ? 'font-semibold text-[#002B5B] underline underline-offset-4 decoration-2 decoration-[#002B5B]'
+                      : 'transition-colors hover:text-[#002B5B]'}
                   >
                     {item.label}
                   </Link>
@@ -97,7 +101,7 @@ export default function DirectorHeader({
               <span className="text-xs font-medium text-emerald-700">Optimo</span>
             </div>
           )}
-          <button className="relative rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-50">
+          <button aria-label="Notificaciones" className="relative rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-50">
             <Bell className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full border border-white bg-red-500" />
           </button>

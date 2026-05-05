@@ -48,6 +48,10 @@ export default function LoginPage() {
           navigate('/admin/dashboard');
         } else if (data.user.role === 'DIRECTOR') {
           navigate('/director/dashboard');
+        } else if (data.user.role === 'JURIDIC') {
+          navigate('/juridic/dashboard');
+        } else if (data.user.role === 'SUPERVISOR') {
+          navigate('/supervisor/dashboard');
         } else {
           navigate('/operative/dashboard');
         }
@@ -77,7 +81,7 @@ export default function LoginPage() {
               <img
                 src={valdiviaLogo}
                 alt="Logo VALDIVIA"
-                className="h-32 w-auto object-contain"
+                className="h-[200px] w-auto object-contain"
               />
             </div>
 
