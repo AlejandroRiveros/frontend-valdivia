@@ -21,6 +21,7 @@ import { Link, useSearchParams } from 'react-router';
 import { Button } from '../components/ui/button';
 import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
 import DirectorHeader from '../components/director/DirectorHeader';
+import { downloadTextFile, saveDraftRecord } from '../../lib/file-actions';
 
 // --- Types ---
 
@@ -81,6 +82,7 @@ export default function ContractFilePage() {
   const [modifications, setModifications] = useState<Modification[]>([]);
   const [showModForm, setShowModForm] = useState(false);
   const [newMod, setNewMod] = useState<Partial<Modification>>({ type: 'valor', valueImpact: 0 });
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   // Audit Log
   const [auditLog] = useState<AuditLog[]>([
@@ -132,6 +134,24 @@ export default function ContractFilePage() {
 
     setShowModForm(false);
     setNewMod({ type: 'valor', valueImpact: 0 });
+    setSaveMessage(`Se registró la modificación ${mod.id} en el expediente ${contract.code}.`);
+  };
+
+  const handleSaveChanges = () => {
+    saveDraftRecord(`valdivia_contract_file_${contract.code}`, {
+      contract,
+      deliverables,
+      modifications,
+      savedAt: new Date().toISOString(),
+    });
+    setSaveMessage(`Cambios del expediente ${contract.code} guardados correctamente.`);
+  };
+
+  const handleDownloadSupport = (filename: string, title?: string) => {
+    downloadTextFile(
+      filename.replace(/\.(pdf|zip)$/i, '.txt'),
+      `${title ?? filename}\nExpediente: ${contract.code}\nFecha de generación: ${new Date().toLocaleString()}`,
+    );
   };
 
   return (
@@ -310,6 +330,13 @@ export default function ContractFilePage() {
            </div>
         )}
 
+        {saveMessage && (
+           <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-emerald-600 mt-0.5" />
+              <p className="text-sm font-medium text-emerald-800">{saveMessage}</p>
+           </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
            
            {/* 3. PLAN DE ENTREGABLES (Left Column - Wider) */}
@@ -319,7 +346,7 @@ export default function ContractFilePage() {
                     <h2 className="text-sm font-bold text-[#002B5B] uppercase tracking-wide flex items-center gap-2">
                        <FileText className="h-4 w-4" /> Plan de Entregables y Pagos
                     </h2>
-                    <Button size="sm" variant="outline" className="h-8 text-xs border-slate-200 text-slate-600">
+                    <Button type="button" size="sm" variant="outline" onClick={handleSaveChanges} className="h-8 text-xs border-slate-200 text-slate-600">
                        <Save className="h-3 w-3 mr-1" /> Guardar Cambios
                     </Button>
                  </div>
@@ -375,9 +402,9 @@ export default function ContractFilePage() {
                                    </span>
                                 </td>
                                 <td className="px-4 py-3 text-center">
-                                   <button className="text-slate-300 hover:text-[#002B5B]">
+                                   <span title="Edición directa habilitada en la fila" className="inline-flex text-slate-300">
                                       <Edit3 className="h-4 w-4" />
-                                   </button>
+                                   </span>
                                 </td>
                              </tr>
                           ))}
@@ -534,7 +561,7 @@ export default function ContractFilePage() {
                                       </span>
                                    )}
                                    <div className="flex gap-2">
-                                      <button className="text-blue-600 hover:underline flex items-center gap-1">
+                                      <button type="button" onClick={() => handleDownloadSupport(mod.document, `${mod.id} - soporte contractual`)} className="text-blue-600 hover:underline flex items-center gap-1">
                                          <Download className="h-3 w-3" /> Soporte
                                       </button>
                                    </div>
@@ -557,26 +584,32 @@ export default function ContractFilePage() {
               <section className="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
                  <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-4">Documentación Legal</h2>
                  <ul className="space-y-2">
-                    <li className="flex items-center justify-between p-2 hover:bg-slate-50 rounded cursor-pointer group">
+                    <li>
+                      <button type="button" onClick={() => handleDownloadSupport('Minuta_del_Contrato.pdf', 'Minuta del Contrato')} className="flex w-full items-center justify-between p-2 hover:bg-slate-50 rounded group text-left">
                        <div className="flex items-center gap-2">
                           <FileText className="h-4 w-4 text-slate-400 group-hover:text-[#002B5B]" />
                           <span className="text-sm text-slate-600 group-hover:text-slate-900">Minuta del Contrato</span>
                        </div>
                        <Download className="h-3 w-3 text-slate-300" />
+                      </button>
                     </li>
-                    <li className="flex items-center justify-between p-2 hover:bg-slate-50 rounded cursor-pointer group">
+                    <li>
+                      <button type="button" onClick={() => handleDownloadSupport('Poliza_de_Cumplimiento.pdf', 'Póliza de Cumplimiento')} className="flex w-full items-center justify-between p-2 hover:bg-slate-50 rounded group text-left">
                        <div className="flex items-center gap-2">
                           <FileText className="h-4 w-4 text-slate-400 group-hover:text-[#002B5B]" />
                           <span className="text-sm text-slate-600 group-hover:text-slate-900">Póliza de Cumplimiento</span>
                        </div>
                        <Download className="h-3 w-3 text-slate-300" />
+                      </button>
                     </li>
-                    <li className="flex items-center justify-between p-2 hover:bg-slate-50 rounded cursor-pointer group">
+                    <li>
+                      <button type="button" onClick={() => handleDownloadSupport('Acta_de_Inicio.pdf', 'Acta de Inicio')} className="flex w-full items-center justify-between p-2 hover:bg-slate-50 rounded group text-left">
                        <div className="flex items-center gap-2">
                           <FileText className="h-4 w-4 text-slate-400 group-hover:text-[#002B5B]" />
                           <span className="text-sm text-slate-600 group-hover:text-slate-900">Acta de Inicio</span>
                        </div>
                        <Download className="h-3 w-3 text-slate-300" />
+                      </button>
                     </li>
                  </ul>
               </section>

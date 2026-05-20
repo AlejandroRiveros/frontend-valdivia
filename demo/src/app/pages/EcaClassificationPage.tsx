@@ -13,8 +13,9 @@ import {
   Save,
   Factory
 } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Button } from '../components/ui/button';
+import { saveDraftRecord } from '../../lib/file-actions';
 
 // Interfaces for type safety
 interface MaterialRow {
@@ -26,6 +27,8 @@ interface MaterialRow {
 }
 
 export default function EcaClassificationPage() {
+  const navigate = useNavigate();
+
   // --- State Management ---
   
   // General Info
@@ -49,6 +52,7 @@ export default function EcaClassificationPage() {
   const [totalCalculated, setTotalCalculated] = useState(0);
   const [difference, setDifference] = useState(0);
   const [consistency, setConsistency] = useState<'consistent' | 'warning' | 'error'>('consistent');
+  const [feedback, setFeedback] = useState<{ type: 'info' | 'success' | 'error'; message: string } | null>(null);
 
   // --- Effects & Logic ---
 
@@ -112,6 +116,58 @@ export default function EcaClassificationPage() {
     entryWeight > 0 && 
     totalClassified > 0 &&
     consistency !== 'error';
+
+  const handleSaveDraft = () => {
+    saveDraftRecord('valdivia_eca_validation_draft', {
+      ecaId,
+      scaleId,
+      scaleStatus,
+      entryWeight,
+      materials,
+      hasRejection,
+      rejectionWeight,
+      rejectionReason,
+      totalClassified,
+      totalCalculated,
+      difference,
+      consistency,
+    });
+    setFeedback({ type: 'info', message: 'Borrador de validación guardado para continuar después.' });
+  };
+
+  const handleRegisterValidation = () => {
+    if (!isFormValid) {
+      setFeedback({ type: 'error', message: 'Corrija las inconsistencias antes de registrar la validación.' });
+      return;
+    }
+
+    saveDraftRecord('valdivia_eca_validation_last_submission', {
+      ecaId,
+      scaleId,
+      scaleStatus,
+      entryWeight,
+      materials,
+      hasRejection,
+      rejectionWeight,
+      rejectionReason,
+      totalClassified,
+      totalCalculated,
+      difference,
+      consistency,
+      registeredAt: new Date().toISOString(),
+    });
+
+    setFeedback({
+      type: 'success',
+      message: 'Validación registrada. Continúe con la consistencia contractual del expediente.',
+    });
+
+    window.setTimeout(() => navigate('/operative/mass-balance'), 900);
+  };
+
+  const handleEvidenceUpload = (label: string) => {
+    setFeedback({ type: 'info', message: `Soporte "${label}" vinculado al expediente para trazabilidad.` });
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-20">
@@ -362,18 +418,18 @@ export default function EcaClassificationPage() {
                         <Camera className="h-4 w-4" /> Soportes de Trazabilidad
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                         <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-slate-50 cursor-pointer h-32">
+                         <button type="button" onClick={() => handleEvidenceUpload('Documento principal')} className="border-2 border-dashed border-slate-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-slate-50 cursor-pointer h-32">
                             <Camera className="h-6 w-6 text-slate-400 mb-2" />
                             <span className="text-xs font-medium text-slate-600">Documento principal</span>
-                         </div>
-                         <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-slate-50 cursor-pointer h-32">
+                         </button>
+                         <button type="button" onClick={() => handleEvidenceUpload('Acta / certificado')} className="border-2 border-dashed border-slate-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-slate-50 cursor-pointer h-32">
                             <Scale className="h-6 w-6 text-slate-400 mb-2" />
                             <span className="text-xs font-medium text-slate-600">Acta / certificado</span>
-                         </div>
-                         <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-slate-50 cursor-pointer h-32">
+                         </button>
+                         <button type="button" onClick={() => handleEvidenceUpload('Soporte escaneado')} className="border-2 border-dashed border-slate-300 rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-slate-50 cursor-pointer h-32">
                             <FileText className="h-6 w-6 text-slate-400 mb-2" />
                             <span className="text-xs font-medium text-slate-600">Soporte escaneado</span>
-                         </div>
+                         </button>
                     </div>
                 </section>
             </div>
@@ -445,16 +501,32 @@ export default function EcaClassificationPage() {
                         </div>
                     </div>
 
+                    {feedback && (
+                        <div
+                            className={`mt-4 rounded-lg border px-4 py-3 text-sm ${
+                                feedback.type === 'success'
+                                    ? 'border-emerald-300 bg-emerald-500/15 text-emerald-50'
+                                    : feedback.type === 'error'
+                                        ? 'border-red-300 bg-red-500/15 text-red-50'
+                                        : 'border-blue-300 bg-white/10 text-white'
+                            }`}
+                        >
+                            {feedback.message}
+                        </div>
+                    )}
+
                     {/* 7. Action Buttons */}
                     <div className="mt-8 space-y-3">
                         <Button 
+                            type="button"
+                            onClick={handleRegisterValidation}
                             className="w-full bg-white text-[#002B5B] hover:bg-slate-100 font-bold"
                             disabled={!isFormValid}
                         >
                             <Save className="h-4 w-4 mr-2" />
                             Registrar Validación
                         </Button>
-                        <Button variant="outline" className="w-full border-white/30 text-white hover:bg-white/10 hover:text-white">
+                        <Button type="button" variant="outline" onClick={handleSaveDraft} className="w-full border-white/30 text-white hover:bg-white/10 hover:text-white">
                             Guardar Borrador
                         </Button>
                     </div>

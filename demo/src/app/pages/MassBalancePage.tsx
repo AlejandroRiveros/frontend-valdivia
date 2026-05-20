@@ -14,10 +14,23 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router';
 import { Button } from '../components/ui/button';
+import { downloadJsonFile } from '../../lib/file-actions';
 
 export default function MassBalancePage() {
   // Mock Data for demonstration
   const [currentMonth] = useState('Enero 2024');
+  const [showOnlyIssues, setShowOnlyIssues] = useState(false);
+
+  const rows = [
+    { date: '15/01', route: 'Supervisión', material: 'Informe mensual', col: 12, cla: 12, rej: 0, diff: 0, status: 'ok' },
+    { date: '15/01', route: 'Jurídica', material: 'Póliza de cumplimiento', col: 4, cla: 4, rej: 0, diff: 0, status: 'ok' },
+    { date: '14/01', route: 'Financiera', material: 'Cuenta de cobro', col: 8, cla: 7, rej: 1, diff: 0, status: 'warning' },
+    { date: '14/01', route: 'Contratación', material: 'Otro sí', col: 6, cla: 6, rej: 0, diff: 0, status: 'ok' },
+    { date: '13/01', route: 'Archivo', material: 'Acta de inicio', col: 5, cla: 5, rej: 0, diff: 0, status: 'ok' },
+    { date: '12/01', route: 'Financiera', material: 'CDP / RP', col: 7, cla: 5, rej: 1, diff: -1, status: 'error' },
+  ] as const;
+
+  const visibleRows = showOnlyIssues ? rows.filter((row) => row.status !== 'ok') : rows;
   
   // Summary Data
   const summary = {
@@ -31,6 +44,16 @@ export default function MassBalancePage() {
 
   // Determine global status based on difference
   const globalStatus = summary.differencePercent <= 1 ? 'optimal' : summary.differencePercent <= 5 ? 'warning' : 'critical';
+
+  const handleExport = () => {
+    downloadJsonFile('consistencia-contractual.json', {
+      month: currentMonth,
+      generatedAt: new Date().toISOString(),
+      onlyIssues: showOnlyIssues,
+      summary,
+      rows: visibleRows,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-12">
@@ -140,10 +163,16 @@ export default function MassBalancePage() {
                              <span className="px-2 py-0.5 bg-slate-200 text-slate-600 rounded text-[10px] font-bold">Enero</span>
                         </div>
                         <div className="flex items-center gap-2">
-                             <Button variant="ghost" size="sm" className="h-8 text-slate-500 border-slate-200 hover:bg-white">
-                                <Filter className="h-3 w-3 mr-1" /> Filtrar
+                             <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setShowOnlyIssues((prev) => !prev)}
+                                className="h-8 text-slate-500 border-slate-200 hover:bg-white"
+                             >
+                                <Filter className="h-3 w-3 mr-1" /> {showOnlyIssues ? 'Ver todo' : 'Ver pendientes'}
                              </Button>
-                             <Button variant="outline" size="sm" className="h-8 text-[#002B5B] border-slate-200 bg-white hover:bg-slate-50">
+                             <Button type="button" variant="outline" size="sm" onClick={handleExport} className="h-8 text-[#002B5B] border-slate-200 bg-white hover:bg-slate-50">
                                 <Download className="h-3 w-3 mr-1" /> Exportar
                              </Button>
                         </div>
@@ -164,12 +193,9 @@ export default function MassBalancePage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
-                                <TableRow date="15/01" route="Supervisión" material="Informe mensual" col={12} cla={12} rej={0} diff={0} status="ok" />
-                                <TableRow date="15/01" route="Jurídica" material="Póliza de cumplimiento" col={4} cla={4} rej={0} diff={0} status="ok" />
-                                <TableRow date="14/01" route="Financiera" material="Cuenta de cobro" col={8} cla={7} rej={1} diff={0} status="warning" />
-                                <TableRow date="14/01" route="Contratación" material="Otro sí" col={6} cla={6} rej={0} diff={0} status="ok" />
-                                <TableRow date="13/01" route="Archivo" material="Acta de inicio" col={5} cla={5} rej={0} diff={0} status="ok" />
-                                <TableRow date="12/01" route="Financiera" material="CDP / RP" col={7} cla={5} rej={1} diff={-1} status="error" />
+                                {visibleRows.map((row) => (
+                                    <TableRow key={`${row.date}-${row.route}-${row.material}`} {...row} />
+                                ))}
                             </tbody>
                         </table>
                     </div>

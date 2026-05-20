@@ -15,11 +15,14 @@ import {
   X,
   Navigation
 } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Button } from '../components/ui/button';
 import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
+import { saveDraftRecord } from '../../lib/file-actions';
 
 export default function CollectionRegistrationPage() {
+  const navigate = useNavigate();
+
   // Mock state for demonstration
   const [contractStatus] = useState<'active' | 'inactive'>('active');
   const [arlStatus] = useState<'valid' | 'expired' | 'warning'>('warning'); 
@@ -29,6 +32,8 @@ export default function CollectionRegistrationPage() {
   const [macroroute, setMacroroute] = useState('');
   const [materialType, setMaterialType] = useState('');
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
+  const [filingNumber, setFilingNumber] = useState('');
+  const [feedback, setFeedback] = useState<{ type: 'info' | 'success' | 'error'; message: string } | null>(null);
 
   // Handle weight change to simulate validation
   const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +59,58 @@ export default function CollectionRegistrationPage() {
     setTimeout(() => {
       setUploadedFile('documento_contractual_001.pdf');
     }, 500);
+  };
+
+  const handleGenerateFiling = () => {
+    const nextFiling = `SECOP-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}`;
+    setFilingNumber(nextFiling);
+    setFeedback({ type: 'info', message: `Se generó el radicado ${nextFiling}.` });
+  };
+
+  const handleSaveDraft = () => {
+    saveDraftRecord('valdivia_collection_registration_draft', {
+      filingNumber,
+      selectedMicroroute,
+      macroroute,
+      materialType,
+      weight,
+      uploadedFile,
+    });
+    setFeedback({ type: 'info', message: 'Borrador guardado. Puede retomarlo antes de radicar.' });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (contractStatus === 'inactive') {
+      setFeedback({ type: 'error', message: 'El contrato está inactivo. No se puede radicar documentación.' });
+      return;
+    }
+
+    if (!selectedMicroroute || !materialType || !weight) {
+      setFeedback({ type: 'error', message: 'Complete el tipo documental, la clasificación y el número de folios.' });
+      return;
+    }
+
+    const finalFilingNumber = filingNumber || `SECOP-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}`;
+    setFilingNumber(finalFilingNumber);
+
+    saveDraftRecord('valdivia_collection_registration_last_submission', {
+      filingNumber: finalFilingNumber,
+      selectedMicroroute,
+      macroroute,
+      materialType,
+      weight,
+      uploadedFile,
+      submittedAt: new Date().toISOString(),
+    });
+
+    setFeedback({
+      type: 'success',
+      message: `Documento radicado con éxito bajo el consecutivo ${finalFilingNumber}. Continuará a validación documental.`,
+    });
+
+    window.setTimeout(() => navigate('/operative/eca-classification'), 900);
   };
 
   return (
@@ -113,8 +170,23 @@ export default function CollectionRegistrationPage() {
           </div>
         )}
 
+        {feedback && (
+          <div
+            className={`rounded-r border-l-4 p-4 shadow-sm flex items-start gap-3 ${
+              feedback.type === 'success'
+                ? 'bg-emerald-50 border-emerald-500 text-emerald-800'
+                : feedback.type === 'error'
+                  ? 'bg-red-50 border-red-500 text-red-800'
+                  : 'bg-blue-50 border-blue-500 text-[#002B5B]'
+            }`}
+          >
+            {feedback.type === 'success' ? <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" /> : <Info className="h-5 w-5 flex-shrink-0 mt-0.5" />}
+            <p className="text-sm font-medium">{feedback.message}</p>
+          </div>
+        )}
+
         {/* 3. Main Form */}
-        <form className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden relative" onSubmit={(e) => e.preventDefault()}>
+        <form className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden relative" onSubmit={handleSubmit}>
           {contractStatus === 'inactive' && (
             <div className="absolute inset-0 bg-white/60 z-10 cursor-not-allowed"></div>
           )}
@@ -171,13 +243,14 @@ export default function CollectionRegistrationPage() {
             <div className="space-y-2">
               <label className="block text-xs font-bold text-slate-700 uppercase">Número de Radicado / SECOP</label>
               <div className="flex gap-2">
-                 <input 
+                <input 
                   type="text" 
                   readOnly
+                  value={filingNumber}
                   placeholder="Radicado no asignado"
                   className="flex-1 px-3 py-2 border border-slate-300 rounded-md text-sm bg-slate-50 text-slate-500"
                 />
-                <Button type="button" size="sm" className="shrink-0 w-auto px-3 bg-[#002B5B] text-white border-transparent hover:bg-[#001F44]">
+                <Button type="button" size="sm" onClick={handleGenerateFiling} className="shrink-0 w-auto px-3 bg-[#002B5B] text-white border-transparent hover:bg-[#001F44]">
                   <Navigation className="h-4 w-4 mr-1" /> Generar
                 </Button>
               </div>
@@ -264,7 +337,10 @@ export default function CollectionRegistrationPage() {
                 </div>
 
                 {/* Upload Zone 2: Document */}
-                <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:border-[#002B5B] hover:bg-slate-50 transition-colors cursor-pointer group">
+                <div
+                  onClick={handleUpload}
+                  className="border-2 border-dashed border-slate-300 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:border-[#002B5B] hover:bg-slate-50 transition-colors cursor-pointer group"
+                >
                    <div className="p-3 bg-slate-100 rounded-full mb-3 group-hover:bg-blue-100 transition-colors">
                     <UploadCloud className="h-6 w-6 text-slate-400 group-hover:text-[#002B5B]" />
                   </div>
@@ -301,10 +377,11 @@ export default function CollectionRegistrationPage() {
 
           {/* Footer Actions */}
           <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-3 sticky bottom-0 z-10">
-            <Button variant="outline" className="text-slate-600 border-slate-300 bg-white">
+            <Button type="button" variant="outline" onClick={handleSaveDraft} className="text-slate-600 border-slate-300 bg-white">
               Guardar Borrador
             </Button>
             <Button 
+              type="submit"
               className="bg-[#002B5B] hover:bg-[#001F44] text-white min-w-[180px]"
               disabled={contractStatus === 'inactive'}
             >

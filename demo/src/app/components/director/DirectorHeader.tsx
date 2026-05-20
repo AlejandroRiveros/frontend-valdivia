@@ -101,7 +101,11 @@ export default function DirectorHeader({
               <span className="text-xs font-medium text-emerald-700">Optimo</span>
             </div>
           )}
-          <button aria-label="Notificaciones" className="relative rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-50">
+          <button
+            aria-label="Notificaciones"
+            onClick={() => navigate('/director/authorization?status=pending')}
+            className="relative rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-50"
+          >
             <Bell className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full border border-white bg-red-500" />
           </button>

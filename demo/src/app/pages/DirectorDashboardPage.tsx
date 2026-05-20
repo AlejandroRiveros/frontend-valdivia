@@ -348,8 +348,8 @@ export default function DirectorDashboardPage() {
               <div className="flex items-center justify-between border-b border-slate-100 p-6">
                 <h3 className="font-bold text-slate-900">Estado de contratos</h3>
                 <div className="flex gap-2">
-                  <button aria-label="Buscar contratos" className="text-slate-400 transition-colors hover:text-[#002B5B] cursor-pointer"><Search className="h-4 w-4" /></button>
-                  <button aria-label="Configurar tabla" className="text-slate-400 transition-colors hover:text-[#002B5B] cursor-pointer"><Settings className="h-4 w-4" /></button>
+                  <Link to="/director/contract-file?contractId=CT-2023-089" aria-label="Buscar contratos" className="text-slate-400 transition-colors hover:text-[#002B5B] cursor-pointer"><Search className="h-4 w-4" /></Link>
+                  <Link to="/director/processes" aria-label="Configurar tabla" className="text-slate-400 transition-colors hover:text-[#002B5B] cursor-pointer"><Settings className="h-4 w-4" /></Link>
                 </div>
               </div>
               <div className="overflow-x-auto">

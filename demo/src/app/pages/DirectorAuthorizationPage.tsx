@@ -19,6 +19,7 @@ import {
 import { Link, useSearchParams } from 'react-router';
 import { Button } from '../components/ui/button';
 import DirectorHeader from '../components/director/DirectorHeader';
+import { downloadJsonFile, downloadTextFile } from '../../lib/file-actions';
 
 // --- Types ---
 
@@ -83,6 +84,7 @@ export default function DirectorAuthorizationPage() {
   const [observation, setObservation] = useState('');
   const initialStatus = searchParams.get('status') ?? 'pending';
   const [filterStatus, setFilterStatus] = useState<string>(initialStatus);
+  const historyTarget = `/director/contract-file?contractId=${selectedDeliverable?.contractId ?? 'CT-2023-001'}`;
 
   const filteredDeliverables = useMemo(() => {
     if (filterStatus === 'all') {
@@ -100,6 +102,34 @@ export default function DirectorAuthorizationPage() {
     setSelectedDeliverable(null);
     setObservation('');
     setShowConfirmModal(false);
+  };
+
+  const handleDownloadBundle = () => {
+    if (!selectedDeliverable) return;
+
+    downloadJsonFile(`entregable-${selectedDeliverable.id}.json`, {
+      deliverable: selectedDeliverable,
+      downloadedAt: new Date().toISOString(),
+      attachments: [
+        'Informe_Tecnico_Oct2023.pdf',
+        'Certificacion_ARL_Parafiscales.pdf',
+        'Anexos_Contractuales.zip',
+      ],
+      observation,
+    });
+  };
+
+  const handleDownloadAttachment = (name: string) => {
+    downloadTextFile(
+      name.replace(/\.(pdf|zip)$/i, '.txt'),
+      `Simulación de descarga para ${name}\nExpediente asociado: ${selectedDeliverable?.contractId ?? 'N/A'}\nFecha: ${new Date().toLocaleString()}`,
+    );
+  };
+
+  const handleReject = () => {
+    if (!selectedDeliverable || !observation) return;
+    alert(`Entregable ${selectedDeliverable.id} devuelto con observación registrada.`);
+    handleBack();
   };
 
   return (
@@ -123,8 +153,10 @@ export default function DirectorAuthorizationPage() {
                 <ShieldCheck className="h-4 w-4" /> DIRECTOR OPERATIVO
               </span>
             </div>
-            <Button variant="outline" className="hidden sm:flex border-slate-300 text-slate-600 hover:bg-slate-50">
-              <History className="h-4 w-4 mr-2" /> Historial
+            <Button asChild variant="outline" className="hidden sm:flex border-slate-300 text-slate-600 hover:bg-slate-50">
+              <Link to={historyTarget}>
+                <History className="h-4 w-4 mr-2" /> Historial
+              </Link>
             </Button>
           </>
         }
@@ -291,7 +323,7 @@ export default function DirectorAuthorizationPage() {
                          <FileText className="h-4 w-4" /> Documentación y Soportes
                       </h2>
                       <div className="flex gap-2">
-                         <Button size="sm" variant="outline" className="h-8 text-xs">
+                         <Button type="button" size="sm" variant="outline" onClick={handleDownloadBundle} className="h-8 text-xs">
                             <Download className="h-3 w-3 mr-1" /> Descargar Todo
                          </Button>
                       </div>
@@ -306,8 +338,10 @@ export default function DirectorAuthorizationPage() {
                          <p className="text-sm text-slate-500 max-w-xs mb-4">
                             {selectedDeliverable.type} - {selectedDeliverable.month}.pdf
                          </p>
-                         <Button variant="outline" className="bg-white">
-                            <Eye className="h-4 w-4 mr-2" /> Abrir en Visor Completo
+                         <Button asChild variant="outline" className="bg-white">
+                            <Link to={historyTarget}>
+                              <Eye className="h-4 w-4 mr-2" /> Abrir en Visor Completo
+                            </Link>
                          </Button>
                       </div>
 
@@ -315,9 +349,9 @@ export default function DirectorAuthorizationPage() {
                       <div>
                          <h3 className="text-xs font-bold text-slate-500 uppercase mb-3">Archivos Adjuntos</h3>
                          <div className="space-y-2">
-                            <AttachmentItem name="Informe_Tecnico_Oct2023.pdf" size="2.4 MB" type="pdf" />
-                            <AttachmentItem name="Certificacion_ARL_Parafiscales.pdf" size="1.1 MB" type="pdf" />
-                            <AttachmentItem name="Anexos_Contractuales.zip" size="15.8 MB" type="zip" />
+                            <AttachmentItem name="Informe_Tecnico_Oct2023.pdf" size="2.4 MB" type="pdf" onDownload={handleDownloadAttachment} />
+                            <AttachmentItem name="Certificacion_ARL_Parafiscales.pdf" size="1.1 MB" type="pdf" onDownload={handleDownloadAttachment} />
+                            <AttachmentItem name="Anexos_Contractuales.zip" size="15.8 MB" type="zip" onDownload={handleDownloadAttachment} />
                          </div>
                       </div>
 
@@ -411,6 +445,7 @@ export default function DirectorAuthorizationPage() {
                          <div className="grid grid-cols-2 gap-3">
                             <Button 
                               variant="outline" 
+                              onClick={handleReject}
                               className="border-red-200 text-red-700 hover:bg-red-50 hover:border-red-300"
                               disabled={!observation}
                               title={!observation ? "Requiere observación para rechazar" : ""}
@@ -516,9 +551,13 @@ function Badge({ color, icon, text, large }: any) {
    );
 }
 
-function AttachmentItem({ name, size, type }: any) {
+function AttachmentItem({ name, size, type, onDownload }: any) {
    return (
-      <div className="flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer group">
+      <button
+         type="button"
+         onClick={() => onDownload(name)}
+         className="flex w-full items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer group text-left"
+      >
          <div className="h-8 w-8 bg-slate-100 rounded flex items-center justify-center text-slate-500 mr-3 group-hover:bg-white group-hover:text-[#002B5B] transition-colors">
             {type === 'pdf' ? <FileText className="h-4 w-4" /> : <Paperclip className="h-4 w-4" />}
          </div>
@@ -527,7 +566,7 @@ function AttachmentItem({ name, size, type }: any) {
             <p className="text-xs text-slate-400">{size} • {type.toUpperCase()}</p>
          </div>
          <Download className="h-4 w-4 text-slate-300 group-hover:text-[#002B5B]" />
-      </div>
+      </button>
    );
 }
 

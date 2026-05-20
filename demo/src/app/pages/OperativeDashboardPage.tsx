@@ -29,6 +29,7 @@ import {
 import { Button } from '../components/ui/button';
 import { Link, useNavigate } from 'react-router';
 import valdiviaLogo from '../../assets/9ea87c1c8d8e49e210fe4afd0e12a9f44fe0b8ee.png';
+import { downloadJsonFile, downloadTextFile } from '../../lib/file-actions';
 
 export default function OperativeDashboardPage() {
   const navigate = useNavigate();
@@ -43,6 +44,33 @@ export default function OperativeDashboardPage() {
     localStorage.removeItem('valdivia_token');
     localStorage.removeItem('valdivia_user');
     navigate('/');
+  };
+
+  const handleTemplateDownload = () => {
+    downloadTextFile(
+      'plantilla-radicacion-contractual.txt',
+      [
+        'Plantilla base de radicación contractual',
+        '1. Numero de contrato',
+        '2. Tipo documental',
+        '3. Fecha del soporte',
+        '4. Area responsable',
+        '5. Observaciones y anexos',
+      ].join('\n'),
+    );
+  };
+
+  const handleExportHistory = () => {
+    downloadJsonFile('historial-gestion-documental.json', {
+      exportedAt: new Date().toISOString(),
+      user: userName,
+      events: [
+        { date: '20 Oct, 14:30', event: 'Radicación contractual', contract: 'CT-892', detail: 'Minuta y anexos', docs: '12 docs', status: 'Validado' },
+        { date: '20 Oct, 09:15', event: 'Revisión jurídica', contract: 'CT-892', detail: 'Póliza de cumplimiento', docs: '4 docs', status: 'Validado' },
+        { date: '19 Oct, 16:45', event: 'Subsanación', contract: 'CT-892', detail: 'CDP faltante', docs: '1 soporte', status: 'Devuelto' },
+        { date: '18 Oct, 10:00', event: 'Control documental', contract: 'General', detail: 'Seguridad Social', docs: '2 docs', status: 'Pendiente' },
+      ],
+    });
   };
 
   return (
@@ -75,7 +103,11 @@ export default function OperativeDashboardPage() {
             </div>
 
             <div className="flex items-center gap-4">
-              <button aria-label="Notificaciones" className="relative text-slate-400 hover:text-[#002B5B] transition-colors p-1.5 hover:bg-slate-50 rounded-md">
+              <button
+                aria-label="Notificaciones"
+                onClick={() => navigate('/operative/deliverables')}
+                className="relative text-slate-400 hover:text-[#002B5B] transition-colors p-1.5 hover:bg-slate-50 rounded-md"
+              >
                 <Bell className="h-4 w-4" />
                 <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 bg-red-500 rounded-full border border-white"></span>
               </button>
@@ -212,9 +244,9 @@ export default function OperativeDashboardPage() {
                     <FileText className="h-3.5 w-3.5" /> Documentación Legal
                   </h3>
                   <div className="grid grid-cols-2 gap-3">
-                    <SecondaryActionButton icon={<Upload />} label="Cargar Docs" />
-                    <SecondaryActionButton icon={<RefreshCw />} label="Actualizar" highlight />
-                    <SecondaryActionButton icon={<Download />} label="Plantillas" />
+                    <SecondaryActionButton icon={<Upload />} label="Cargar Docs" to="/operative/collection" />
+                    <SecondaryActionButton icon={<RefreshCw />} label="Actualizar" onClick={() => window.location.reload()} highlight />
+                    <SecondaryActionButton icon={<Download />} label="Plantillas" onClick={handleTemplateDownload} />
                   </div>
                 </section>
 
@@ -224,9 +256,9 @@ export default function OperativeDashboardPage() {
                     <Briefcase className="h-3.5 w-3.5" /> Gestión Contractual
                   </h3>
                   <div className="grid grid-cols-2 gap-3">
-                    <SecondaryActionButton icon={<Search />} label="Contratos" />
-                    <SecondaryActionButton icon={<Upload />} label="Entregables" />
-                    <SecondaryActionButton icon={<MessageSquare />} label="Observaciones" />
+                    <SecondaryActionButton icon={<Search />} label="Contratos" to="/operative/processes" />
+                    <SecondaryActionButton icon={<Upload />} label="Entregables" to="/operative/deliverables" />
+                    <SecondaryActionButton icon={<MessageSquare />} label="Observaciones" to="/operative/eca-classification" />
                   </div>
                 </section>
               </div>
@@ -259,7 +291,7 @@ export default function OperativeDashboardPage() {
                    <h3 className="text-sm font-bold text-slate-800">Registro de Actividad</h3>
                    <p className="text-[10px] text-slate-400 mt-0.5">Últimos movimientos auditados</p>
                 </div>
-                <Button variant="outline" size="sm" className="h-8 text-xs border-slate-200 text-slate-600 hover:text-[#002B5B]">
+                <Button type="button" variant="outline" size="sm" onClick={handleExportHistory} className="h-8 text-xs border-slate-200 text-slate-600 hover:text-[#002B5B]">
                    Exportar Historial
                 </Button>
               </div>
@@ -279,19 +311,19 @@ export default function OperativeDashboardPage() {
                   <tbody className="divide-y divide-slate-50">
                     <TableRow 
                       date="20 Oct, 14:30" type="Radicación contractual" contract="CT-892" material="Minuta y anexos" 
-                      qty="12 docs" status="Validado" statusType="success" 
+                      qty="12 docs" status="Validado" statusType="success" to="/operative/collection"
                     />
                     <TableRow 
                       date="20 Oct, 09:15" type="Revisión jurídica" contract="CT-892" material="Póliza de cumplimiento" 
-                      qty="4 docs" status="Validado" statusType="success" 
+                      qty="4 docs" status="Validado" statusType="success" to="/operative/eca-classification"
                     />
                      <TableRow 
                       date="19 Oct, 16:45" type="Subsanación" contract="CT-892" material="CDP faltante" 
-                      qty="1 soporte" status="Devuelto" statusType="error" 
+                      qty="1 soporte" status="Devuelto" statusType="error" to="/operative/deliverables"
                     />
                     <TableRow 
                       date="18 Oct, 10:00" type="Control documental" contract="General" material="Seguridad Social" 
-                      qty="2 docs" status="Pendiente" statusType="warning" 
+                      qty="2 docs" status="Pendiente" statusType="warning" to="/operative/processes"
                     />
                   </tbody>
                 </table>
@@ -339,8 +371,8 @@ export default function OperativeDashboardPage() {
                 <p className="text-[10px] text-slate-400 mb-3 leading-relaxed">
                   El sistema bloquea aprobaciones si existen soportes contractuales vencidos o incompletos.
                 </p>
-                <Button variant="outline" size="sm" className="w-full text-xs h-8 bg-white hover:bg-slate-50 text-slate-600 border-slate-200">
-                  Gestión de Cumplimiento
+                <Button asChild variant="outline" size="sm" className="w-full text-xs h-8 bg-white hover:bg-slate-50 text-slate-600 border-slate-200">
+                  <Link to="/operative/mass-balance">Gestión de Cumplimiento</Link>
                 </Button>
               </div>
             </div>
@@ -439,16 +471,26 @@ function ActionButton({ icon, label, desc, variant, href }: ActionButtonProps) {
   return <button className="w-full">{content}</button>;
 }
 
-interface SecondaryActionButtonProps { icon: React.ReactElement; label: string; highlight?: boolean; }
-function SecondaryActionButton({ icon, label, highlight }: SecondaryActionButtonProps) {
-    return (
-        <button className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all text-center h-20 w-full hover:shadow-sm ${
+interface SecondaryActionButtonProps { icon: React.ReactElement; label: string; highlight?: boolean; to?: string; onClick?: () => void; }
+function SecondaryActionButton({ icon, label, highlight, to, onClick }: SecondaryActionButtonProps) {
+    const content = (
+        <div className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all text-center h-20 w-full hover:shadow-sm ${
             highlight ? 'bg-red-50/50 border-red-100 text-red-700 hover:bg-red-50' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-300 hover:text-slate-700'
         }`}>
             <div className="mb-1">
                 {React.cloneElement(icon, { size: 18, strokeWidth: 1.5 })}
             </div>
             <span className="text-[10px] font-semibold">{label}</span>
+        </div>
+    );
+
+    if (to) {
+        return <Link to={to}>{content}</Link>;
+    }
+
+    return (
+        <button type="button" onClick={onClick} className="w-full">
+            {content}
         </button>
     )
 }
@@ -477,8 +519,8 @@ function FlowStep({ step, label, status, icon }: FlowStepProps) {
   );
 }
 
-interface TableRowProps { date: string; type: string; contract: string; material: string; qty: string; status: string; statusType: 'success' | 'error' | 'warning'; }
-function TableRow({ date, type, contract, material, qty, status, statusType }: TableRowProps) {
+interface TableRowProps { date: string; type: string; contract: string; material: string; qty: string; status: string; statusType: 'success' | 'error' | 'warning'; to: string; }
+function TableRow({ date, type, contract, material, qty, status, statusType, to }: TableRowProps) {
   const statusStyles = {
       success: 'bg-emerald-100 text-emerald-800 border-emerald-200',
       error: 'bg-red-50 text-red-700 border-red-100',
@@ -498,9 +540,9 @@ function TableRow({ date, type, contract, material, qty, status, statusType }: T
         </span>
       </td>
       <td className="px-6 py-3 text-right">
-        <button className="text-slate-300 hover:text-[#002B5B]">
+        <Link to={to} className="inline-flex text-slate-300 hover:text-[#002B5B]">
             <MoreHorizontal className="h-4 w-4" />
-        </button>
+        </Link>
       </td>
     </tr>
   );

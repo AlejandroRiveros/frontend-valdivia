@@ -34,6 +34,10 @@ export default function AdminDashboardPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
+  const [editingUser, setEditingUser] = useState<any | null>(null);
+  const [editingRole, setEditingRole] = useState('ANALYST');
+  const [isUpdatingRole, setIsUpdatingRole] = useState(false);
+  const [roleUpdateError, setRoleUpdateError] = useState('');
 
   const emailPreview = generateEmailBase(formData.nombres, formData.apellidos);
 
@@ -111,6 +115,38 @@ export default function AdminDashboardPage() {
         alert(data.error);
       }
     } catch { /* silent */ }
+  };
+
+  const handleEditRole = (user: any) => {
+    setEditingUser(user);
+    setEditingRole(user.role);
+    setRoleUpdateError('');
+  };
+
+  const handleUpdateRole = async () => {
+    if (!editingUser) return;
+    setIsUpdatingRole(true);
+    setRoleUpdateError('');
+
+    try {
+      const res = await apiFetch(`/users/${editingUser.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ role: editingRole })
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'No se pudo actualizar el rol');
+      }
+
+      setFormSuccess(`Rol actualizado para ${editingUser.name}.`);
+      setEditingUser(null);
+      fetchUsers();
+    } catch (error) {
+      setRoleUpdateError(error instanceof Error ? error.message : 'No se pudo actualizar el rol');
+    } finally {
+      setIsUpdatingRole(false);
+    }
   };
 
   return (
@@ -309,7 +345,7 @@ export default function AdminDashboardPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-1 text-slate-400">
-                        <button className="p-2 hover:bg-slate-100 rounded hover:text-[#002B5B] transition-colors" title="Editar Rol">
+                        <button onClick={() => handleEditRole(user)} className="p-2 hover:bg-slate-100 rounded hover:text-[#002B5B] transition-colors" title="Editar Rol">
                           <FileEdit className="h-4 w-4" />
                         </button>
                         <button
@@ -327,6 +363,46 @@ export default function AdminDashboardPage() {
             </table>
           </div>
         </div>
+
+        {editingUser && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
+            <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
+              <h3 className="text-lg font-bold text-slate-900">Editar rol de usuario</h3>
+              <p className="mt-1 text-sm text-slate-500">{editingUser.name}</p>
+
+              <div className="mt-5 space-y-2">
+                <label className="block text-xs font-bold uppercase tracking-wide text-slate-500">Rol asignado</label>
+                <select
+                  value={editingRole}
+                  onChange={e => setEditingRole(e.target.value)}
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-[#002B5B] focus:ring-[#002B5B]"
+                >
+                  <option value="ANALYST">Analista (Operativo)</option>
+                  <option value="OPERATOR">Operador</option>
+                  <option value="SUPERVISOR">Supervisor</option>
+                  <option value="JURIDIC">Jurídico</option>
+                  <option value="DIRECTOR">Director Estratégico</option>
+                  <option value="ADMIN">Administrador</option>
+                </select>
+              </div>
+
+              {roleUpdateError && (
+                <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
+                  {roleUpdateError}
+                </div>
+              )}
+
+              <div className="mt-6 flex justify-end gap-3">
+                <Button type="button" variant="outline" onClick={() => setEditingUser(null)}>
+                  Cancelar
+                </Button>
+                <Button type="button" onClick={handleUpdateRole} disabled={isUpdatingRole} className="bg-[#002B5B] text-white hover:bg-[#001F44]">
+                  {isUpdatingRole ? 'Guardando...' : 'Guardar rol'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </main>
     </div>
